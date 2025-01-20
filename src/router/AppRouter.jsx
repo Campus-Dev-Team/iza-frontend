@@ -10,8 +10,9 @@ const AppRouter = () => (
 
         {/* Login */}
         <Route path='/auth/login' element={<LoginPage />} />
-        <Route path='/chat' element={<ChatPage/>} />
 
+        {/* Chat Page */}
+        <Route path='/chat' element={<ChatPage/>} />
     </Routes>
 )
 
