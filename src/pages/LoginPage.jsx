@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Mail, Lock } from 'lucide-react';
 import { Label } from '@/components/ui/label';
-import { CardHeader, CardTitle } from '@/components/ui/card';
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
