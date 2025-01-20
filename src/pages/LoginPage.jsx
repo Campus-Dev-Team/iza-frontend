@@ -1,13 +1,20 @@
 import React, { useState } from 'react';
 import { Mail, Lock } from 'lucide-react';
 import { Label } from '@/components/ui/label';
+import campushm from '../assets/Campushm.png';
+import colombiaFlag from '../assets/colombiaFlag.svg';
+import { useNavigate } from 'react-router-dom'; // Para redirección después del login
+import { login } from '../services/loginService';
 
 const LoginPage = () => {
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     phone: '',
     name: '',
     city: ''
   });
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const cities = [
     'Bucaramanga',
@@ -20,11 +27,51 @@ const LoginPage = () => {
       ...prev,
       [name]: value
     }));
+    if (error) setError('');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form data:', formData);
+    setError('');
+    setIsLoading(true);
+
+    try {
+      // Llamamos al servicio de login con el nombre y teléfono
+      const token = await login(formData.name, formData.phone);
+
+      // Si el login es exitoso, guardamos datos adicionales si es necesario
+      localStorage.setItem('userData', JSON.stringify({
+        name: formData.name,
+        city: formData.city
+      }));
+
+      // Redirigir al usuario a la página principal o dashboard
+      navigate('/dashboard'); // Ajusta la ruta según tu aplicación
+
+    } catch (error) {
+      // Manejo de errores específicos
+      console.log(error);
+      if (error.response) {
+        // Error de respuesta del servidor
+        switch (error.response.status) {
+          case 401:
+            setError('Credenciales inválidas');
+            break;
+          case 404:
+            setError('Usuario no encontrado');
+            break;
+          default:
+            setError('Error al iniciar sesión. Por favor, intente nuevamente');
+        }
+      } else if (error.request) {
+        // Error de conexión
+        setError('Error de conexión. Verifique su conexión a internet');
+      } else {
+        setError('Error al procesar la solicitud');
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -39,8 +86,12 @@ const LoginPage = () => {
           <div className="relative z-10">
             {/* Logo */}
             <div className="flex justify-center mb-6">
-              <div className="w-16 h-16 rounded-full bg-[#3a3a4e] flex items-center justify-center">
-                <div className="w-12 h-12 rounded-full border-2 border-[#6b5ffd]" />
+              <div className="w-24 sm:w-32 md:w-40 transition-transform duration-300 hover:scale-105">
+                <img
+                  src={campushm}
+                  alt="Campus"
+                  className="w-full h-auto mx-auto"
+                />
               </div>
             </div>
 
@@ -48,6 +99,13 @@ const LoginPage = () => {
             <h1 className="text-xl sm:text-2xl font-bold text-white mb-8">
               ¡Bienvenido a Campuslands!
             </h1>
+
+            {/* Error Message */}
+            {error && (
+              <div className="mb-4 text-red-400 text-sm">
+                {error}
+              </div>
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Phone */}
@@ -59,9 +117,9 @@ const LoginPage = () => {
                   <div className="flex-shrink-0">
                     <div className="inline-flex items-center px-3 py-2 border border-r-0 border-[#6b5ffd] rounded-l-lg bg-[#3a3a4e]">
                       <img
-                        src="/api/placeholder/24/24"
-                        alt="Colombia flag"
-                        className="h-5 w-5"
+                        src={colombiaFlag}
+                        alt="Colombia"
+                        className="h-4 w-5"
                       />
                       <span className="ml-2 text-gray-400">+57</span>
                     </div>
@@ -133,12 +191,16 @@ const LoginPage = () => {
               {/* Submit Button */}
               <button
                 type="submit"
-                className="w-full py-2.5 sm:py-3 px-4 rounded-lg text-sm 
-                       cursor-pointer transition-all duration-300 bg-[#6C3AFF] 
-                       text-white hover:bg-[#6d28d9] transform hover:scale-[1.02]
-                       active:scale-[0.98] hover:shadow-lg"
+                disabled={isLoading}
+                className={`w-full py-2.5 sm:py-3 px-4 rounded-lg text-sm 
+                       cursor-pointer transition-all duration-300 
+                       text-white transform hover:scale-[1.02]
+                       active:scale-[0.98] hover:shadow-lg
+                       ${isLoading 
+                         ? 'bg-[#4c3399] cursor-not-allowed' 
+                         : 'bg-[#6C3AFF] hover:bg-[#6d28d9]'}`}
               >
-                Ingresar
+                {isLoading ? 'Iniciando sesión...' : 'Ingresar'}
               </button>
             </form>
           </div>
