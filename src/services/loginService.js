@@ -4,8 +4,8 @@ import { endpoints } from './apiConfig';
 export const login = async (username, telefono) => {
     try {
       const response = await axios.post(endpoints.login, { username, telefono });
-      console.log(response.data);
-      const token = response.data;
+      const token = response.data.token;
+      console.log(token);
   
       localStorage.setItem('token', token);
   
