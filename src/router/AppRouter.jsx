@@ -1,6 +1,7 @@
 import React from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import LoginPage from '../pages/LoginPage'
+import { ChatPage } from '../pages/ChatPage'
 
 const AppRouter = () => (
     <Routes>
@@ -9,6 +10,9 @@ const AppRouter = () => (
 
         {/* Login */}
         <Route path='/auth/login' element={<LoginPage />} />
+
+        {/* Chat Page */}
+        <Route path='/chat' element={<ChatPage/>} />
     </Routes>
 )
 
