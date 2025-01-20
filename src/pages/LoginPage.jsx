@@ -37,16 +37,14 @@ const LoginPage = () => {
 
     try {
       // Llamamos al servicio de login con el nombre y teléfono
-      const token = await login(formData.name, formData.phone);
+      await login(formData.name, formData.phone);
 
       // Si el login es exitoso, guardamos datos adicionales si es necesario
-      localStorage.setItem('userData', JSON.stringify({
-        name: formData.name,
-        city: formData.city
-      }));
+      localStorage.setItem('userCity', formData.city);
+      localStorage.setItem('userName', formData.name);
 
-      // Redirigir al usuario a la página principal o dashboard
-      navigate('/dashboard'); // Ajusta la ruta según tu aplicación
+      // // Redirigir al usuario a la página principal o dashboard
+      navigate('/chat'); // Ajusta la ruta según tu aplicación
 
     } catch (error) {
       // Manejo de errores específicos

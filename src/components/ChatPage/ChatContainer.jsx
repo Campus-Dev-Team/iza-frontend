@@ -76,9 +76,6 @@ export const ChatContainer = () => {
   const handleSendMessage = async (message) => {
     if (!message.trim() || !socket) return;
 
-    localStorage.setItem('userCity', "Bucaramanga");
-    localStorage.setItem('userName', "Santiago");
-
     const userName = localStorage.getItem('userName');
     const userCity = localStorage.getItem('userCity');
 
