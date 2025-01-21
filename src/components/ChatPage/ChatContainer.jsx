@@ -1,123 +1,90 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { MessageList } from "./MessageList";
 import { ChatInput } from "./ChatInput";
+import { wsService } from "../../services/wssChatService";
+import { useChat } from "../../context/ChatContext";
+import { DEFAULT_MESSAGES } from "../../constants/chatMessages";
 
 export const ChatContainer = () => {
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      avatar: 'B',
-      message: '¡Bienvenido a Campuslands! ¿En qué podemos ayudarte?',
-      isAI: true
-    }
-  ]);
-  const [socket, setSocket] = useState(null);
-  const [messageCount, setMessageCount] = useState(0);
+  const { messages, setMessages, isInputEnabled } = useChat();
+  const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
-    // Inicializar WebSocket
-    const ws = new WebSocket("wss://chatcampuslands.com:8443/chatbot/chat");
+    const socket = wsService.connect();
 
-    ws.onopen = () => {
+    socket.onopen = () => {
+      setIsConnected(true);
       console.log("Conexión WebSocket establecida");
-      setSocket(ws);
     };
 
-    ws.onmessage = (event) => {
-      // Agregar mensaje del bot
-      setMessages(prev => [...prev, {
-        id: Date.now(),
-        avatar: 'C',
-        message: event.data,
-        isAI: true
-      }]);
+    const handleMessage = (data) => {
+      try {
+        // Si es string lo usamos directamente, si no, intentamos acceder al mensaje
+        const messageContent = typeof data === 'string' ? data : data.message;
 
-      setMessageCount(prev => {
-        const newCount = prev + 1;
-        if (newCount === 1) {
-          // Mostrar formulario de edad y disponibilidad
-          setMessages(prev => [...prev, {
-            id: Date.now() + 1,
-            avatar: 'C',
-            message: '🎉 ¿Qué edad tienes y tienes disponibilidad de 8 horas diarias?',
-            isAI: true,
-            type: 'age-form'
-          }]);
-        } else if (newCount === 8) {
-          // Mostrar opciones de contacto
-          setMessages(prev => [...prev, {
-            id: Date.now() + 1,
-            avatar: 'C',
-            message: '¿Cómo prefieres que te contactemos?',
-            isAI: true,
-            type: 'contact-form'
-          }]);
-        }
-        return newCount;
-      });
-    };
+        setMessages(prev => [...prev, {
+          id: Date.now(),
+          avatar: 'C',
+          message: messageContent,
+          isAI: true
+        }]);
 
-    ws.onclose = () => {
-      console.log("Conexión WebSocket cerrada");
-    };
-
-    ws.onerror = (error) => {
-      console.error("Error en WebSocket:", error);
-    };
-
-    // Limpiar al desmontar
-    return () => {
-      if (ws) {
-        ws.close();
+      } catch (error) {
+        console.error("Error al procesar mensaje:", error);
       }
+    };
+
+    wsService.addMessageHandler(handleMessage);
+
+    return () => {
+      wsService.removeMessageHandler(handleMessage);
+      wsService.disconnect();
     };
   }, []);
 
-  const handleSendMessage = async (message) => {
-    if (!message.trim() || !socket) return;
+  const handleSendMessage = (message) => {
+    if (!message.trim() || !isConnected || !isInputEnabled) return;
 
     const userName = localStorage.getItem('userName');
     const userCity = localStorage.getItem('userCity');
 
-
     // Agregar mensaje del usuario al chat
     setMessages(prev => [...prev, {
       id: Date.now(),
-      avatar: 'U',
+      avatar: "U",
       message: message,
-      isAI: false
+      isAI: false,
     }]);
 
     // Enviar mensaje al WebSocket
     const fullMessage = {
-      type: 'message',
+      type: "message",
       message: `Mi nombre es: ${userName} y mi pregunta es: ${message}`,
-      city: userCity
+      city: userCity,
     };
 
-    socket.send(JSON.stringify(fullMessage));
+    try {
+      wsService.sendMessage(fullMessage);
+    } catch (error) {
+      console.error("Error al enviar mensaje:", error);
 
-    // Enviar a la API
-    // try {
-    //   const response = await fetch('https://chatcampuslands.com:8443/chatbot/messages/add', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify({ message })
-    //   });
-    //   if (!response.ok) {
-    //     throw new Error('Error al enviar el mensaje');
-    //   }
-    // } catch (error) {
-    //   console.error('Error:', error);
-    // }
+      setMessages(prev => [...prev, {
+        id: Date.now(),
+        avatar: "C",
+        message: "Lo siento, hubo un error al enviar tu mensaje. Por favor, intenta nuevamente.",
+        isAI: true,
+        isError: true
+      }]);
+    }
   };
 
   return (
     <div className="flex flex-col h-screen">
-      <MessageList messages={messages} />
-      <ChatInput onSendMessage={handleSendMessage} />
+      <MessageList />
+      <ChatInput
+        onSendMessage={handleSendMessage}
+        disabled={!isConnected}
+      />
     </div>
   );
 };
