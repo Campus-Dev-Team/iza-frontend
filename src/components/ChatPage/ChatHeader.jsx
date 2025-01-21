@@ -10,9 +10,13 @@ export const ChatHeader = () => {
           className="object-contain h-full w-60"
         />
       </div>
-      <button className="bg-cyan-400 hover:bg-cyan-400/90 text-slate-900 px-6 py-2 rounded-lg font-medium">
+      <a
+        href="https://miniurl.cl/RegistroCampuslands"
+        target="_blank"
+        className="bg-cyan-400 hover:bg-cyan-400/90 text-slate-900 px-6 py-2 rounded-lg font-medium"
+      >
         Inscríbete ahora
-      </button>
+      </a>
     </div>
   );
 };
