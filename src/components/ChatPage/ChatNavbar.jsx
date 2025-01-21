@@ -1,5 +1,5 @@
 import React from "react";
-import { Rocket, Code, Trophy, Settings2, Phone, Facebook, Instagram } from 'lucide-react';
+import { Rocket, Code, Facebook, Instagram } from 'lucide-react';
 
 
 export const ChatNavbar = () => {
@@ -25,7 +25,7 @@ export const ChatNavbar = () => {
         <div className="w-full space-y-2">
           <h3 className="text-lg font-medium text-white/90">Description</h3>
           <p className="text-sm text-white/60 leading-relaxed">
-            Desarrollador apasionado por la tecnología y la educación.
+          Asistente virtual enfocada en guiar tu experiencia en Campuslands"
           </p>
         </div>
       </div>
@@ -34,8 +34,6 @@ export const ChatNavbar = () => {
         {[
           { icon: Rocket, text: 'Campers Storys' },
           { icon: Code, text: 'Campuslands' },
-          { icon: Trophy, text: 'Recursos' },
-          { icon: Settings2, text: 'Configuración' }
         ].map((item, index) => (
           <button
             key={index}
@@ -49,7 +47,7 @@ export const ChatNavbar = () => {
 
       <div className="p-6 border-t border-cyan-400/10">
         <div className="flex justify-center space-x-6">
-          {[Phone, Facebook, Instagram].map((Icon, index) => (
+          {[Facebook, Instagram].map((Icon, index) => (
             <button
               key={index}
               className="text-white/60 hover:text-cyan-400 transition-colors duration-300"

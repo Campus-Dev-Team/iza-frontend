@@ -1,104 +1,90 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { MessageList } from "./MessageList";
 import { ChatInput } from "./ChatInput";
-import { addMessage } from "../../services/messagesService";
 import { wsService } from "../../services/wssChatService";
+import { useChat } from "../../context/ChatContext";
+import { DEFAULT_MESSAGES } from "../../constants/chatMessages";
 
 export const ChatContainer = () => {
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      avatar: "B",
-      message: "¡Bienvenido a Campuslands! ¿En qué podemos ayudarte?",
-      isAI: true,
-    },
-  ]);
-  const [messageCount, setMessageCount] = useState(0);
+  const { messages, setMessages, isInputEnabled } = useChat();
+  const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
-    // Función manejadora de mensajes
-    const handleMessage = (data) => {
-      setMessages(prev => [...prev, {
-        id: Date.now(),
-        avatar: 'C',
-        message: data,
-        isAI: true
-      }]);
+    const socket = wsService.connect();
 
-      setMessageCount((prev) => {
-        const newCount = prev + 1;
-        if (newCount === 1) {
-          // Mostrar formulario de edad y disponibilidad
-          setMessages((prev) => [
-            ...prev,
-            {
-              id: Date.now() + 1,
-              avatar: "C",
-              message:
-                "🎉 ¿Qué edad tienes y tienes disponibilidad de 8 horas diarias?",
-              isAI: true,
-              type: "age-form",
-            },
-          ]);
-        } else if (newCount === 8) {
-          // Mostrar opciones de contacto
-          setMessages((prev) => [
-            ...prev,
-            {
-              id: Date.now() + 1,
-              avatar: "C",
-              message: "¿Cómo prefieres que te contactemos?",
-              isAI: true,
-              type: "contact-form",
-            },
-          ]);
-        }
-        return newCount;
-      });
+    socket.onopen = () => {
+      setIsConnected(true);
+      console.log("Conexión WebSocket establecida");
     };
 
-    // Conectar WebSocket y agregar manejador
-    wsService.connect();
+    const handleMessage = (data) => {
+      try {
+        // Si es string lo usamos directamente, si no, intentamos acceder al mensaje
+        const messageContent = typeof data === 'string' ? data : data.message;
+
+        setMessages(prev => [...prev, {
+          id: Date.now(),
+          avatar: 'C',
+          message: messageContent,
+          isAI: true
+        }]);
+
+      } catch (error) {
+        console.error("Error al procesar mensaje:", error);
+      }
+    };
+
     wsService.addMessageHandler(handleMessage);
 
-    // Limpiar al desmontar
     return () => {
       wsService.removeMessageHandler(handleMessage);
       wsService.disconnect();
     };
   }, []);
 
-  const handleSendMessage = async (message) => {
-    if (!message.trim()) return;
+  const handleSendMessage = (message) => {
+    if (!message.trim() || !isConnected || !isInputEnabled) return;
 
     const userName = localStorage.getItem('userName');
     const userCity = localStorage.getItem('userCity');
 
     // Agregar mensaje del usuario al chat
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: Date.now(),
-        avatar: "U",
-        message: message,
-        isAI: false,
-      },
-    ]);
+    setMessages(prev => [...prev, {
+      id: Date.now(),
+      avatar: "U",
+      message: message,
+      isAI: false,
+    }]);
 
-    // Enviar mensaje a través del servicio
+    // Enviar mensaje al WebSocket
     const fullMessage = {
       type: "message",
       message: `Mi nombre es: ${userName} y mi pregunta es: ${message}`,
       city: userCity,
     };
 
-    wsService.sendMessage(fullMessage);
+    try {
+      wsService.sendMessage(fullMessage);
+    } catch (error) {
+      console.error("Error al enviar mensaje:", error);
+
+      setMessages(prev => [...prev, {
+        id: Date.now(),
+        avatar: "C",
+        message: "Lo siento, hubo un error al enviar tu mensaje. Por favor, intenta nuevamente.",
+        isAI: true,
+        isError: true
+      }]);
+    }
   };
 
   return (
     <div className="flex flex-col h-screen">
-      <MessageList messages={messages} />
-      <ChatInput onSendMessage={handleSendMessage} />
+      <MessageList />
+      <ChatInput
+        onSendMessage={handleSendMessage}
+        disabled={!isConnected}
+      />
     </div>
   );
 };

@@ -2,7 +2,6 @@ import React, { useRef, useState, useEffect } from "react";
 import { Mail, Lock } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import campushm from "../assets/Campushm.png";
-import colombiaFlag from "../assets/colombiaFlag.svg";
 import { useNavigate } from "react-router-dom";
 import { login } from "../services/loginService";
 import { register } from "@/services/registerService";
@@ -14,11 +13,16 @@ const phoneInputStyles = {
           transition-all duration-200 hover:bg-[#434360]`
 };
 
+const customPhoneStyles = `
+  .iti__selected-dial-code {
+    color: white !important;
+  }
+`;
+
 const LoginPage = () => {
   const navigate = useNavigate();
   const phoneInputRef = useRef(null);
   const itiRef = useRef(null);
-
   const [formData, setFormData] = useState({
     phone: "",
     name: "",
@@ -26,10 +30,13 @@ const LoginPage = () => {
   });
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
   const cities = ["Bucaramanga", "Bogotá"];
 
   useEffect(() => {
+    const styleSheet = document.createElement("style");
+    styleSheet.textContent = customPhoneStyles;
+    document.head.appendChild(styleSheet);
+
     if (phoneInputRef.current && window.intlTelInput) {
       itiRef.current = window.intlTelInput(phoneInputRef.current, {
         separateDialCode: true,
@@ -44,26 +51,28 @@ const LoginPage = () => {
       if (itiRef.current) {
         itiRef.current.destroy();
       }
+      // Limpiar los estilos al desmontar
+      document.head.removeChild(styleSheet);
     };
   }, []);
 
   const validarTelefono = (numero) => {
     if (!numero) return null;
-  
+
     // Convertir a string y eliminar todo lo que no sea número
     let numeroLimpio = numero.toString().replace(/\D/g, "");
-  
+
     // Si ya tiene el prefijo 57, dejarlo como está
     if (numeroLimpio.startsWith("57")) {
       return numeroLimpio;
     }
-  
+
     // Si es un número válido de Colombia (10 dígitos comenzando con 3)
     if (numeroLimpio.length === 10 && numeroLimpio.startsWith("3")) {
       // Agregar el prefijo 57
       return `57${numeroLimpio}`;
     }
-  
+
     return null;
   };
 
@@ -240,9 +249,9 @@ const LoginPage = () => {
                        cursor-pointer transition-all duration-300 
                        text-white transform hover:scale-[1.02]
                        active:scale-[0.98] hover:shadow-lg
-                       ${isLoading 
-                         ? "bg-[#4c3399] cursor-not-allowed" 
-                         : "bg-[#6C3AFF] hover:bg-[#6d28d9]"}`}
+                       ${isLoading
+                    ? "bg-[#4c3399] cursor-not-allowed"
+                    : "bg-[#6C3AFF] hover:bg-[#6d28d9]"}`}
               >
                 {isLoading ? "Iniciando sesión..." : "Ingresar"}
               </button>
