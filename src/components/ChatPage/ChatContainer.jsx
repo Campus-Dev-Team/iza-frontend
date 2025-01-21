@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { MessageList } from "./MessageList";
 import { ChatInput } from "./ChatInput";
+import { wsService } from "../../services/wssChatService";
 
 export const ChatContainer = () => {
   const [messages, setMessages] = useState([
@@ -11,24 +12,15 @@ export const ChatContainer = () => {
       isAI: true
     }
   ]);
-  const [socket, setSocket] = useState(null);
   const [messageCount, setMessageCount] = useState(0);
 
   useEffect(() => {
-    // Inicializar WebSocket
-    const ws = new WebSocket("wss://chatcampuslands.com:8443/chatbot/chat");
-
-    ws.onopen = () => {
-      console.log("Conexión WebSocket establecida");
-      setSocket(ws);
-    };
-
-    ws.onmessage = (event) => {
-      // Agregar mensaje del bot
+    // Función manejadora de mensajes
+    const handleMessage = (data) => {
       setMessages(prev => [...prev, {
         id: Date.now(),
         avatar: 'C',
-        message: event.data,
+        message: data,
         isAI: true
       }]);
 
@@ -57,28 +49,22 @@ export const ChatContainer = () => {
       });
     };
 
-    ws.onclose = () => {
-      console.log("Conexión WebSocket cerrada");
-    };
-
-    ws.onerror = (error) => {
-      console.error("Error en WebSocket:", error);
-    };
+    // Conectar WebSocket y agregar manejador
+    wsService.connect();
+    wsService.addMessageHandler(handleMessage);
 
     // Limpiar al desmontar
     return () => {
-      if (ws) {
-        ws.close();
-      }
+      wsService.removeMessageHandler(handleMessage);
+      wsService.disconnect();
     };
   }, []);
 
   const handleSendMessage = async (message) => {
-    if (!message.trim() || !socket) return;
+    if (!message.trim()) return;
 
     const userName = localStorage.getItem('userName');
     const userCity = localStorage.getItem('userCity');
-
 
     // Agregar mensaje del usuario al chat
     setMessages(prev => [...prev, {
@@ -88,30 +74,14 @@ export const ChatContainer = () => {
       isAI: false
     }]);
 
-    // Enviar mensaje al WebSocket
+    // Enviar mensaje a través del servicio
     const fullMessage = {
       type: 'message',
       message: `Mi nombre es: ${userName} y mi pregunta es: ${message}`,
       city: userCity
     };
 
-    socket.send(JSON.stringify(fullMessage));
-
-    // Enviar a la API
-    // try {
-    //   const response = await fetch('https://chatcampuslands.com:8443/chatbot/messages/add', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify({ message })
-    //   });
-    //   if (!response.ok) {
-    //     throw new Error('Error al enviar el mensaje');
-    //   }
-    // } catch (error) {
-    //   console.error('Error:', error);
-    // }
+    wsService.sendMessage(fullMessage);
   };
 
   return (
