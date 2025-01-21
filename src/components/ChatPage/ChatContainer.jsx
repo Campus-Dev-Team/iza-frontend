@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { MessageList } from "./MessageList";
 import { ChatInput } from "./ChatInput";
-import { wsService } from "../../services/wssChatService";
+import { addMessage } from "@/services/messagesService";
 
 export const ChatContainer = () => {
   const [messages, setMessages] = useState([
     {
       id: 1,
-      avatar: 'B',
-      message: '¡Bienvenido a Campuslands! ¿En qué podemos ayudarte?',
-      isAI: true
-    }
+      avatar: "B",
+      message: "¡Bienvenido a Campuslands! ¿En qué podemos ayudarte?",
+      isAI: true,
+    },
   ]);
   const [messageCount, setMessageCount] = useState(0);
 
@@ -24,26 +24,33 @@ export const ChatContainer = () => {
         isAI: true
       }]);
 
-      setMessageCount(prev => {
+      setMessageCount((prev) => {
         const newCount = prev + 1;
         if (newCount === 1) {
           // Mostrar formulario de edad y disponibilidad
-          setMessages(prev => [...prev, {
-            id: Date.now() + 1,
-            avatar: 'C',
-            message: '🎉 ¿Qué edad tienes y tienes disponibilidad de 8 horas diarias?',
-            isAI: true,
-            type: 'age-form'
-          }]);
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: Date.now() + 1,
+              avatar: "C",
+              message:
+                "🎉 ¿Qué edad tienes y tienes disponibilidad de 8 horas diarias?",
+              isAI: true,
+              type: "age-form",
+            },
+          ]);
         } else if (newCount === 8) {
           // Mostrar opciones de contacto
-          setMessages(prev => [...prev, {
-            id: Date.now() + 1,
-            avatar: 'C',
-            message: '¿Cómo prefieres que te contactemos?',
-            isAI: true,
-            type: 'contact-form'
-          }]);
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: Date.now() + 1,
+              avatar: "C",
+              message: "¿Cómo prefieres que te contactemos?",
+              isAI: true,
+              type: "contact-form",
+            },
+          ]);
         }
         return newCount;
       });
@@ -67,18 +74,21 @@ export const ChatContainer = () => {
     const userCity = localStorage.getItem('userCity');
 
     // Agregar mensaje del usuario al chat
-    setMessages(prev => [...prev, {
-      id: Date.now(),
-      avatar: 'U',
-      message: message,
-      isAI: false
-    }]);
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: Date.now(),
+        avatar: "U",
+        message: message,
+        isAI: false,
+      },
+    ]);
 
     // Enviar mensaje a través del servicio
     const fullMessage = {
-      type: 'message',
+      type: "message",
       message: `Mi nombre es: ${userName} y mi pregunta es: ${message}`,
-      city: userCity
+      city: userCity,
     };
 
     wsService.sendMessage(fullMessage);
