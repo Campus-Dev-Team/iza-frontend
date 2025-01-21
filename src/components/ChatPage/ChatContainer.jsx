@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { MessageList } from "./MessageList";
 import { ChatInput } from "./ChatInput";
-import { addMessage } from "@/services/messagesService";
+import { addMessage } from "../../services/messagesService";
+import { wsService } from "../../services/wssChatService";
 
 export const ChatContainer = () => {
   const [messages, setMessages] = useState([
