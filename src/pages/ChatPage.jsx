@@ -2,6 +2,7 @@ import { ChatNavbar } from '../components/ChatPage/ChatNavbar';
 import { ChatHeader } from '../components/ChatPage/ChatHeader';
 import { MessageList } from '../components/ChatPage/MessageList';
 import { ChatInput } from '../components/ChatPage/ChatInput';
+import { ChatContainer } from '../components/ChatPage/ChatContainer';
 
 export const ChatPage = () => {
   return (
@@ -9,8 +10,7 @@ export const ChatPage = () => {
       <ChatNavbar />
       <div className="flex-1 flex flex-col">
         <ChatHeader />
-        <MessageList />
-        <ChatInput />
+        <ChatContainer />
       </div>
     </div>
   );
