@@ -94,7 +94,7 @@ export const ChatNavbar = () => {
           <div className={`w-full space-y-2 ${isCollapsed ? "lg:hidden" : ""}`}>
             <h3 className="text-lg font-medium text-white/90">Description</h3>
             <p className="text-sm text-white/60 leading-relaxed">
-              Asistente virtual enfocada en guiar tu experiencia en Campuslands"
+            Soy Iza, tu asistente en Campuslands. Estoy aquí para guiarte, responder tus preguntas y motivarte a aprovechar nuestro programa intensivo. Mi meta es ayudarte a alcanzar tus sueños en tecnología con una formación innovadora, oportunidades laborales y crecimiento personal. 😊
             </p>
           </div>
         </div>
