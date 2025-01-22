@@ -1,3 +1,4 @@
+import { Navigate } from "react-router-dom";
 import API_WEBSOCKET_URL from "./apiConfig";
 
 class WebSocketService {
@@ -19,7 +20,7 @@ class WebSocketService {
   
       this.socket.onclose = () => {
         console.log("Conexión WebSocket cerrada");
-        navigate('/auth/login');
+        Navigate('/auth/login');
       };
   
       this.socket.onerror = (error) => {
