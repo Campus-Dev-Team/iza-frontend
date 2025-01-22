@@ -1,16 +1,28 @@
 import React, { useState } from "react";
 import { SendHorizonal } from 'lucide-react';
 import { useChat } from '@/context/ChatContext';
+import { addMessage } from "@/services/messagesService";
 
 export const ChatInput = ({ onSendMessage, disabled }) => {
   const [message, setMessage] = useState("");
   const { isInputEnabled } = useChat();
+
+  const handleAddMessage = async () => {
+    try {
+      const response = await addMessage(message);
+      console.log('respuesta al anadir mensaje',response);
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (message.trim() && isInputEnabled) {
       onSendMessage(message);
       setMessage("");
+      handleAddMessage(message);
     }
   };
 

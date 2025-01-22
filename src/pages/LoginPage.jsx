@@ -5,12 +5,13 @@ import campushm from "../assets/Campushm.png";
 import { useNavigate } from "react-router-dom";
 import { login } from "../services/loginService";
 import { register } from "@/services/registerService";
+import { useAuth } from "@/context/AuthContext";
 
 const phoneInputStyles = {
   container: `flex-1 min-w-0 block w-full`,
-  input: `w-full px-3 py-2 rounded-r-lg bg-[#3a3a4e] text-white
-          border border-[#6b5ffd] focus:ring-2 focus:ring-[#7c3aed] focus:ring-offset-0
-          transition-all duration-200 hover:bg-[#434360]`
+  input: `w-full px-3 py-2 rounded-r-lg bg-[#2A303C] text-white
+          border border-[#00D8D6] focus:ring-2 focus:ring-[#00D8D6] focus:ring-offset-0
+          transition-all duration-200 hover:bg-[#2A303C]/80`,
 };
 
 const customPhoneStyles = `
@@ -24,13 +25,19 @@ const LoginPage = () => {
   const phoneInputRef = useRef(null);
   const itiRef = useRef(null);
   const [formData, setFormData] = useState({
-    phone: "",
-    name: "",
+    telefono: "",
+    username: "",
+    city: "",
+  });
+  const [updatedFormData, setUpdatedFormData] = useState({
+    telefono: "",
+    username: "",
     city: "",
   });
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const cities = ["Bucaramanga", "Bogotá"];
+  const { loginStorage } = useAuth();
 
   useEffect(() => {
     const styleSheet = document.createElement("style");
@@ -43,7 +50,7 @@ const LoginPage = () => {
         initialCountry: "co",
         preferredCountries: ["co"],
         onlyCountries: ["co"], // Solo permitir Colombia
-        allowDropdown: false // Deshabilitar el dropdown de países
+        allowDropdown: false, // Deshabilitar el dropdown de países
       });
     }
 
@@ -102,23 +109,40 @@ const LoginPage = () => {
       return;
     }
 
+    setUpdatedFormData({
+      ...formData,
+      telefono: validatedPhone,
+    });
+
     try {
-      const updatedFormData = {
+      console.log("ciudad de usuario", formData.city);
+
+      console.log(
+        "telefono a enviar",
+        validatedPhone,
+        "//",
+        updatedFormData.telefono
+      );
+
+      console.log("formdata updated", updatedFormData);
+
+      await login({
         ...formData,
-        phone: validatedPhone,
-      };
+        telefono: validatedPhone
+      });
 
       console.log('telefono a enviar', validatedPhone, "//", updatedFormData.phone)
-
-      await login(updatedFormData.name, updatedFormData.phone);
-      localStorage.setItem("userCity", formData.city);
-      localStorage.setItem("userName", formData.name);
+      loginStorage(formData.username, formData.city);
       navigate("/chat");
-
     } catch (error) {
       try {
-        const response = await register(formData.name, validatedPhone);
+        const response = await register({
+          ...formData,
+          telefono: validatedPhone
+        });
         if (response) {
+          
+          loginStorage(formData.username, formData.city);
           navigate("/chat");
           return;
         }
@@ -149,11 +173,13 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#1a1a2e] flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen w-full bg-slate-900 flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-md px-4 sm:px-6">
-        <div className="w-full bg-[#2a2a3e] p-6 md:p-8 border border-[#6b5ffd] rounded-2xl 
-                     shadow-[0_0_30px_-6px_#6b5ffd] text-center relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-[#6b5ffd20] to-[#6b5ffd10] opacity-50"></div>
+        <div
+          className="w-full bg-[#23272F] p-6 md:p-8 border border-[#00d8d4] rounded-2xl 
+                   shadow-[0_0_30px_-6px_#00D8D6] text-center relative overflow-hidden"
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-700/50 to-slate-700/50 opacity-50"></div>
 
           <div className="relative z-10">
             <div className="flex justify-center mb-6">
@@ -180,7 +206,7 @@ const LoginPage = () => {
                 <div className="flex">
                   <input
                     type="tel"
-                    name="phone"
+                    name="telefono"
                     ref={phoneInputRef}
                     required
                     className={phoneInputStyles.input}
@@ -196,18 +222,18 @@ const LoginPage = () => {
                 </Label>
                 <div className="relative group">
                   <Mail
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 
-                               group-hover:text-[#6b5ffd] transition-colors duration-200"
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#A1A1AA] 
+                    group-hover:text-[#00D8D6] transition-colors duration-200"
                     size={18}
                   />
                   <input
                     type="text"
-                    name="name"
+                    name="username"
                     required
-                    className="w-full py-2.5 px-4 pl-9 bg-[#3a3a4e] rounded-lg text-white 
-                             text-sm focus:outline-none focus:ring-2 focus:ring-[#7c3aed] 
-                             focus:ring-offset-0 transition-all duration-200 hover:bg-[#434360]"
-                    value={formData.name}
+                    className="w-full py-2.5 px-4 pl-9 bg-[#2A303C] rounded-lg text-white 
+                      text-sm focus:outline-none focus:ring-2 focus:ring-[#00D8D6] 
+                      focus:ring-offset-0 transition-all duration-200 hover:bg-[#2A303C]/80"
+                    value={formData.username}
                     onChange={handleInputChange}
                   />
                 </div>
@@ -219,16 +245,16 @@ const LoginPage = () => {
                 </Label>
                 <div className="relative group">
                   <Lock
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 
-                               group-hover:text-[#6b5ffd] transition-colors duration-200"
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#A1A1AA] 
+                      group-hover:text-[#00D8D6] transition-colors duration-200"
                     size={18}
                   />
                   <select
                     name="city"
                     required
-                    className="w-full py-2.5 px-4 pl-9 bg-[#3a3a4e] rounded-lg text-white 
-                             text-sm focus:outline-none focus:ring-2 focus:ring-[#7c3aed] 
-                             focus:ring-offset-0 transition-all duration-200 hover:bg-[#434360]"
+                    className="w-full py-2.5 px-4 pl-9 bg-[#2A303C] rounded-lg text-white 
+                           text-sm focus:outline-none focus:ring-2 focus:ring-[#00d8d4] 
+                           focus:ring-offset-0 transition-all duration-200 hover:bg-[#2A303C]/80"
                     value={formData.city}
                     onChange={handleInputChange}
                   >
@@ -246,12 +272,14 @@ const LoginPage = () => {
                 type="submit"
                 disabled={isLoading}
                 className={`w-full py-2.5 sm:py-3 px-4 rounded-lg text-sm 
-                       cursor-pointer transition-all duration-300 
-                       text-white transform hover:scale-[1.02]
-                       active:scale-[0.98] hover:shadow-lg
-                       ${isLoading
-                    ? "bg-[#4c3399] cursor-not-allowed"
-                    : "bg-[#6C3AFF] hover:bg-[#6d28d9]"}`}
+                     cursor-pointer transition-all duration-300 
+                     text-white font-semibold transform hover:scale-[1.02]
+                     active:scale-[0.98] hover:shadow-lg
+                       ${
+                         isLoading
+                           ? "bg-cyan-400 cursor-not-allowed"
+                           : "bg-cyan-400 hover:bg-cyan-500/90"
+                       }`}
               >
                 {isLoading ? "Iniciando sesión..." : "Ingresar"}
               </button>
