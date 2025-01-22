@@ -94,13 +94,20 @@ export const ChatNavbar = () => {
           </button>
 
           <div className="flex justify-center space-x-6">
-            {[Facebook, Instagram].map((Icon, index) => (
-              <button
+            {[
+              { Icon: Facebook, url: 'https://www.facebook.com/Campuslands' },
+              { Icon: Instagram, url: 'https://www.instagram.com/campuslands/' },
+              { Icon: Linkedin, url: 'https://www.linkedin.com/company/campuslands/' }
+            ].map(({ Icon, url }, index) => (
+              <a
+                href={url}
                 key={index}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-white/60 hover:text-cyan-400 transition-colors duration-300"
               >
                 <Icon className="h-5 w-5" />
-              </button>
+              </a>
             ))}
           </div>
         </div>
