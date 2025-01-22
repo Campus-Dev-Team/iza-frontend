@@ -2,18 +2,41 @@ import React from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import LoginPage from '../pages/LoginPage'
 import { ChatPage } from '../pages/ChatPage'
+import { ProtectedRoute } from '../router/ProtectedRoute';
+import { useAuth } from '../context/AuthContext';
 
-const AppRouter = () => (
-    <Routes>
-        {/* Redireccion a / */}
-        <Route path="*" element={<Navigate to="/auth/login" />} />
+const AppRouter = () => {
+    const { isAuthenticated } = useAuth();
 
-        {/* Login */}
-        <Route path='/auth/login' element={<LoginPage />} />
+    return (
+        <Routes>
+            {/* Ruta por defecto */}
+            <Route path="/" element={
+                isAuthenticated ? <Navigate to="/chat" /> : <Navigate to="/auth/login" />
+            } />
 
-        {/* Chat Page */}
-        <Route path='/chat' element={<ChatPage/>} />
-    </Routes>
-)
+            {/* Ruta de login */}
+            <Route
+                path="/auth/login"
+                element={
+                    isAuthenticated ? <Navigate to="/chat" /> : <LoginPage />
+                }
+            />
 
-export default AppRouter
+            {/* Ruta protegida del chat */}
+            <Route
+                path="/chat"
+                element={
+                    <ProtectedRoute>
+                        <ChatPage />
+                    </ProtectedRoute>
+                }
+            />
+
+            {/* Ruta para cualquier otra dirección */}
+            <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+    );
+};
+
+export default AppRouter;
