@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { endpoints } from './apiConfig';
 
-export const register = async (username, telefono) => {
+export const register = async (data) => {
     try {
-      const response = await axios.post(endpoints.register, { username, telefono });
+      const response = await axios.post(endpoints.register, data);
       const token = response.data.token;
       console.log(token);
   
