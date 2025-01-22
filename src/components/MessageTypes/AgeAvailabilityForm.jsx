@@ -7,7 +7,7 @@ export const AgeAvailabilityForm = ({ message }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (age && age >= 15 && age <= 50) {
+        if (age && age >= 10 && age <= 100) {
             submitAge(age);
         }
     };
