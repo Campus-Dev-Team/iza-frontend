@@ -19,6 +19,7 @@ class WebSocketService {
   
       this.socket.onclose = () => {
         console.log("Conexión WebSocket cerrada");
+        navigate('/auth/login');
       };
   
       this.socket.onerror = (error) => {
