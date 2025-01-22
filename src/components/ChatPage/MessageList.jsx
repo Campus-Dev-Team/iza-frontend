@@ -76,7 +76,7 @@ export const MessageList = () => {
               className={`w-full flex ${!msg.isAI ? 'justify-end' : 'justify-start'
                 } animate-slide-in opacity-0`}
             >
-              <div className={`flex items-start gap-2 max-w-[7/chat0%] ${msg.isAI ? 'flex-row' : 'flex-row-reverse'
+              <div className={`flex items-start gap-2 max-w-[55%] ${msg.isAI ? 'flex-row' : 'flex-row-reverse'
                 }`}>
                 {/* Avatar */}
                 <div className={`h-8 w-8 ring-2 rounded-full flex items-center 
@@ -89,7 +89,7 @@ export const MessageList = () => {
 
                 {/* Mensaje */}
                 <div className={`${msg.type === 'age-form' || msg.type === 'availability-form'
-                    ? 'w-full' : ''
+                  ? 'w-full' : ''
                   }`}>
                   {renderMessage(msg)}
                 </div>
