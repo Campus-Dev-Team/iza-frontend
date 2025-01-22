@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
     return localStorage.getItem('userName') !== null;
   });
 
-  const login = (userName, city) => {
+  const loginStorage = (userName, city) => {
     localStorage.setItem('userName', userName);
     localStorage.setItem('userCity', city);
     setIsAuthenticated(true);
@@ -18,11 +18,12 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem('userName');
     localStorage.removeItem('userCity');
+    localStorage.removeItem('token');
     setIsAuthenticated(false);
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, loginStorage, logout }}>
       {children}
     </AuthContext.Provider>
   );
