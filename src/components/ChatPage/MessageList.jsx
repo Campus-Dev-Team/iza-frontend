@@ -4,6 +4,8 @@ import { AgeAvailabilityForm } from '../MessageTypes/AgeAvailabilityForm';
 import { AvailabilityForm } from "../MessageTypes/AvailabilityForm";
 import { DefaultMessage } from "../MessageTypes/DefaultMessage";
 import { LazyImage } from '../common/LazyImage';
+import ReactMarkdown from "react-markdown";
+
 
 export const MessageList = () => {
   const { messages } = useChat();
@@ -51,15 +53,38 @@ export const MessageList = () => {
 
   const renderMessage = (msg) => {
     switch (msg.type) {
-      case 'age-form':
+      case "age-form":
         return <AgeAvailabilityForm message={msg} />;
-      case 'availability-form':
+      case "availability-form":
         return <AvailabilityForm message={msg} />;
       default:
-        return <DefaultMessage message={msg} />;
+        return (
+          <div
+            className={`p-3 rounded-lg ${
+              msg.isAI ? "bg-gray-800 text-white" : "bg-cyan-400/10  text-white"
+            }`}
+          >
+            <ReactMarkdown
+              components={{
+                a: ({ href, children }) => (
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-cyan-400 underline hover:text-cyan-300"
+                  >
+                    {children}
+                  </a>
+                ),
+              }}
+            >
+              {msg.message}
+            </ReactMarkdown>
+          </div>
+        );
     }
   };
-
+  
   return (
     <div
       ref={containerRef}
