@@ -5,8 +5,7 @@ export const login = async (data) => {
     try {
       const response = await axios.post(endpoints.login, data);
       const token = response.data.token;
-      console.log(token);
-  
+      
       localStorage.setItem('token', token);
   
       return token; 

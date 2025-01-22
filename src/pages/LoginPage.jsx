@@ -5,6 +5,7 @@ import campushm from "../assets/Campushm.png";
 import { useNavigate } from "react-router-dom";
 import { login } from "../services/loginService";
 import { register } from "@/services/registerService";
+import { useAuth } from "@/context/AuthContext";
 
 const phoneInputStyles = {
   container: `flex-1 min-w-0 block w-full`,
@@ -36,6 +37,7 @@ const LoginPage = () => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const cities = ["Bucaramanga", "Bogotá"];
+  const { loginStorage } = useAuth();
 
   useEffect(() => {
     const styleSheet = document.createElement("style");
@@ -128,8 +130,9 @@ const LoginPage = () => {
         ...formData,
         telefono: validatedPhone
       });
-      localStorage.setItem("userCity", formData.city);
-      localStorage.setItem("userName", formData.username);
+
+      console.log('telefono a enviar', validatedPhone, "//", updatedFormData.phone)
+      loginStorage(formData.username, formData.city);
       navigate("/chat");
     } catch (error) {
       try {
@@ -138,6 +141,8 @@ const LoginPage = () => {
           telefono: validatedPhone
         });
         if (response) {
+          
+          loginStorage(formData.username, formData.city);
           navigate("/chat");
           return;
         }

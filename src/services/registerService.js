@@ -5,7 +5,6 @@ export const register = async (data) => {
     try {
       const response = await axios.post(endpoints.register, data);
       const token = response.data.token;
-      console.log(token);
   
       localStorage.setItem('token', token);
   
