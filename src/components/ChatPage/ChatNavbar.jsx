@@ -2,6 +2,7 @@ import React from "react";
 import { Rocket, Code, Facebook, Instagram,Linkedin , LogOut } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
+import { LazyImage } from '../common/LazyImage';
 
 
 export const ChatNavbar = () => {
@@ -19,8 +20,8 @@ export const ChatNavbar = () => {
       <div className="p-8 flex flex-col items-center space-y-6">
         <div className="relative">
           <div className="h-28 w-28 ring-2 ring-cyan-400/20 rounded-full bg-slate-800 flex items-center justify-center overflow-hidden">
-            <img
-              src="src/assets/iza-campus.webp"
+            <LazyImage
+              src="https://camper-stories.s3.us-east-2.amazonaws.com/assets/iza-campus.webp"
               alt="Iza Campus"
               className="w-full h-full object-cover"
             />
