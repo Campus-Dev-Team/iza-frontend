@@ -3,6 +3,7 @@ import { useChat } from '../../context/ChatContext';
 import { AgeAvailabilityForm } from '../MessageTypes/AgeAvailabilityForm';
 import { AvailabilityForm } from "../MessageTypes/AvailabilityForm";
 import { DefaultMessage } from "../MessageTypes/DefaultMessage";
+import { LazyImage } from '../common/LazyImage';
 import ReactMarkdown from "react-markdown";
 
 
@@ -15,8 +16,8 @@ export const MessageList = () => {
   const renderAvatar = (isAI) => {
     if (isAI) {
       return (
-        <img
-          src="src/assets/iza-campus.webp"
+        <LazyImage
+          src="https://camper-stories.s3.us-east-2.amazonaws.com/assets/iza-campus.webp"
           alt="Iza Campus"
           className="w-full h-full object-cover"
         />
