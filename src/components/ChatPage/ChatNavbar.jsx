@@ -1,8 +1,19 @@
 import React from "react";
-import { Rocket, Code, Facebook, Instagram, Linkedin } from 'lucide-react';
+import { Rocket, Code, Facebook, Instagram,Linkedin , LogOut } from 'lucide-react';
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
 
 
 export const ChatNavbar = () => {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/auth/login');
+  };
+
+
   return (
     <div className="w-80 bg-slate-800/50 backdrop-blur-xl -r border-cyan-400/10 flex flex-col">
       <div className="p-8 flex flex-col items-center space-y-6">
@@ -25,7 +36,7 @@ export const ChatNavbar = () => {
         <div className="w-full space-y-2">
           <h3 className="text-lg font-medium text-white/90">Description</h3>
           <p className="text-sm text-white/60 leading-relaxed">
-          Asistente virtual enfocada en guiar tu experiencia en Campuslands"
+            Asistente virtual enfocada en guiar tu experiencia en Campuslands"
           </p>
         </div>
       </div>
@@ -45,7 +56,18 @@ export const ChatNavbar = () => {
         ))}
       </div>
 
-      <div className="p-6 border-t border-cyan-400/10">
+      <div className="p-6 border-t border-cyan-400/10 flex flex-col space-y-6">
+        {/* Botón de Cerrar Sesión */}
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center justify-center px-4 py-2 text-white/70 
+                   hover:text-red-400 hover:bg-red-400/5 rounded-lg group transition-all duration-300"
+        >
+          <LogOut className="mr-3 h-5 w-5 group-hover:rotate-12 transition-transform" />
+          Cerrar Sesión
+        </button>
+        
+        {/* Iconos de redes sociales */}
         <div className="flex justify-center space-x-6">
           {[
             { Icon: Facebook, url: 'https://www.facebook.com/Campuslands' },
