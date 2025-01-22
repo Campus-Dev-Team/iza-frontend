@@ -3,7 +3,6 @@ import { MessageList } from "./MessageList";
 import { ChatInput } from "./ChatInput";
 import { wsService } from "../../services/wssChatService";
 import { useChat } from "../../context/ChatContext";
-import { DEFAULT_MESSAGES } from "../../constants/chatMessages";
 
 export const ChatContainer = () => {
   const { messages, setMessages, isInputEnabled } = useChat();
@@ -79,7 +78,7 @@ export const ChatContainer = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col flex-1 h-[calc(100vh-4rem)]">
       <MessageList />
       <ChatInput
         onSendMessage={handleSendMessage}
