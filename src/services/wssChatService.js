@@ -4,9 +4,18 @@ class WebSocketService {
   constructor() {
     this.socket = null;
     this.messageHandlers = new Set();
+    this.reconnectInterval = 5000; 
+    this.isManuallyDisconnected = false; 
   }
 
   connect() {
+    if (this.socket && (this.socket.readyState === WebSocket.OPEN || this.socket.readyState === WebSocket.CONNECTING)) {
+      console.log("WebSocket ya está conectado o en proceso de conexión.");
+      return this.socket;
+    }
+
+    this.isManuallyDisconnected = false; 
+
     this.socket = new WebSocket(`${API_WEBSOCKET_URL}`);
 
     this.socket.onopen = () => {
@@ -19,6 +28,11 @@ class WebSocketService {
 
     this.socket.onclose = () => {
       console.log("Conexión WebSocket cerrada");
+
+      if (!this.isManuallyDisconnected) {
+        console.log(`Intentando reconectar en ${this.reconnectInterval / 1000} segundos...`);
+        setTimeout(() => this.connect(), this.reconnectInterval);
+      }
     };
 
     this.socket.onerror = (error) => {
@@ -29,6 +43,7 @@ class WebSocketService {
   }
 
   disconnect() {
+    this.isManuallyDisconnected = true; 
     if (this.socket) {
       this.socket.close();
     }
