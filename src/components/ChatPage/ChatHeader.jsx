@@ -2,21 +2,21 @@ import React from "react"
 
 export const ChatHeader = () => {
   return (
-    <div className="bg-slate-800/30 backdrop-blur-xl px-4 py-3 relative">
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
+    <div className="bg-slate-800/30 backdrop-blur-xl px-4 py-3">
+      <div className="flex items-center justify-between pt-[2px] pr-3">
         {/* Logo Container - Ahora a la derecha */}
-        <div className="flex justify-end">
+        <div>
           {" "}
           {/* Cambiado el orden y justificación */}
           <img
-            src="https://camper-stories.s3.us-east-2.amazonaws.com/assets/CampusLogo.png"
+            src="https://camper-stories.s3.us-east-2.amazonaws.com/assets/Logo+Horizontal+Blanco.svg"
             alt="Campus Logo"
             className="object-contain h-10 w-32 sm:h-11 sm:w-40 lg:h-12 lg:w-60"
           />
         </div>
 
         {/* Botón de inscripción - Ahora centrado */}
-        <div className="flex justify-end">
+        <div>
           {" "}
           {/* Contenedor centrado */}
           <a
