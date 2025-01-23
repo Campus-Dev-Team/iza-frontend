@@ -27,6 +27,7 @@ const TikTokIcon = ({ className }) => (
 
 // Mapeo de redes sociales por ciudad
 const socialMediaByCity = {
+  // hola
   Bucaramanga: [
     { Icon: Facebook, url: "https://www.facebook.com/Campuslands" },
     { Icon: Instagram, url: "https://www.instagram.com/campuslands/" },
