@@ -49,8 +49,11 @@ export const ChatNavbar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   // Obtener ciudad desde localStorage
-  const city = localStorage.getItem("city");
+  const city = localStorage.getItem("userCity");
   const socialMedia = socialMediaByCity[city] || [];
+
+  console.log(socialMedia);
+  console.log(socialMediaByCity);
 
   const handleLogout = () => {
     logout();
@@ -134,7 +137,7 @@ export const ChatNavbar = () => {
 
         {/* Redes sociales */}
         <div className="p-6 border-t border-cyan-400/10 flex flex-col space-y-6">
-          <div className={`flex ${isCollapsed ? "lg:flex-col space-y-4" : "space-x-6"}`}>
+          <div className={`flex ${isCollapsed ? "lg:flex-col space-y-4" : "space-x-6 justify-center"}`}>
             {socialMedia.map(({ Icon, url }, index) => (
               <a
                 href={url}
