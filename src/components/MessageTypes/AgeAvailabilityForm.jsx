@@ -8,7 +8,7 @@ export const AgeAvailabilityForm = ({ message }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (age && age >= 15 && age <= 100) {
+    if (age && age >= 10 && age <= 100) {
       submitAge(age);
     }
 
@@ -31,8 +31,8 @@ export const AgeAvailabilityForm = ({ message }) => {
           type="number"
           value={age}
           onChange={(e) => setAge(e.target.value)}
-          min="15"
-          max="50"
+          min="10"
+          max="100"
           placeholder="Tu edad"
           className="w-full bg-slate-800/50 rounded-lg px-4 py-2 text-white 
                          border border-cyan-400/10 focus:ring-2 
@@ -40,7 +40,7 @@ export const AgeAvailabilityForm = ({ message }) => {
         />
         <button
           type="submit"
-          disabled={!age || age < 15 || age > 50}
+          disabled={!age || age < 10 || age > 100}
           className="w-full bg-cyan-400 text-slate-900 px-4 py-2 rounded-lg
                        hover:bg-cyan-400/90 disabled:opacity-50 
                        disabled:cursor-not-allowed"

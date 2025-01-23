@@ -9,15 +9,31 @@ import { useAuth } from "@/context/AuthContext";
 
 const phoneInputStyles = {
   container: `flex-1 min-w-0 block w-full`,
-  input: `w-full px-3 py-2 rounded-r-lg bg-[#2A303C] text-white
+  input: `w-full min-w-[334px] h-10 px-3 py-2.5 rounded-lg bg-[#2A303C] text-white
           border border-[#00D8D6] focus:ring-2 focus:ring-[#00D8D6] focus:ring-offset-0
           transition-all duration-200 hover:bg-[#2A303C]/80`,
 };
 
 const customPhoneStyles = `
-  .iti__selected-dial-code {
-    color: white !important;
-  }
+ .iti__selected-dial-code {
+   color: white !important;
+ }
+ .iti__flag-container {
+   height: 40px !important;
+   display: flex !important;
+   align-items: center !important;
+ }
+ input[type="tel"] {
+   height: 40px !important;
+   line-height: normal !important;
+   width: 100% !important; 
+   min-width: 100% !important;
+ }
+ @media (min-width: 640px) {
+   input[type="tel"] {
+     min-width: 300px !important;
+   }
+ }
 `;
 
 const LoginPage = () => {
@@ -142,7 +158,7 @@ const LoginPage = () => {
           telefono: validatedPhone
         });
         if (response) {
-          
+
           loginStorage(formData.username, formData.city);
           navigate("/chat");
           return;
@@ -276,11 +292,10 @@ const LoginPage = () => {
                      cursor-pointer transition-all duration-300 
                      text-white font-semibold transform hover:scale-[1.02]
                      active:scale-[0.98] hover:shadow-lg
-                       ${
-                         isLoading
-                           ? "bg-cyan-400 cursor-not-allowed"
-                           : "bg-cyan-400 hover:bg-cyan-500/90"
-                       }`}
+                       ${isLoading
+                    ? "bg-cyan-400 cursor-not-allowed"
+                    : "bg-cyan-400 hover:bg-cyan-500/90"
+                  }`}
               >
                 {isLoading ? "Iniciando sesión..." : "Ingresar"}
               </button>
