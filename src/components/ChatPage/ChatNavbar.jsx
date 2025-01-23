@@ -61,10 +61,10 @@ export const ChatNavbar = () => {
           <div className="absolute bottom-1 right-1 w-4 h-4 bg-cyan-400 rounded-full ring-2 ring-slate-900" />
         </div>
 
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-cyan-400">IZA</h2>
-          <p className="text-indigo-400 text-sm">Campus Support Team</p>
-        </div>
+          <div className={`text-center ${isCollapsed ? "lg:hidden" : ""}`}>
+            <h2 className="text-xl lg:text-2xl font-bold text-cyan-400">IZA</h2>
+            <p className="text-indigo-400 text-sm">Campus Support Team</p>
+          </div>
 
         <div className="w-full space-y-2">
           <h3 className="text-lg font-medium text-white/90">Description</h3>

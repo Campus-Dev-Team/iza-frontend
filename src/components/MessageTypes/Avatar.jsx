@@ -1,6 +1,6 @@
 // components/MessageTypes/Avatar.jsx
-import React from 'react';
-import izaCampus from '../../assets/iza-campus.webp';
+import React from "react";
+import izaCampus from "../../assets/iza-campus.webp";
 
 export const Avatar = ({ isAI }) => {
   return (
