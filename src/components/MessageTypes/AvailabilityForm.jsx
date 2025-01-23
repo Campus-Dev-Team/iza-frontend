@@ -26,7 +26,7 @@ export const AvailabilityForm = ({ message }) => {
   };
 
   return (
-    <div className="bg-slate-800/50 rounded-2xl p-4">
+    <div className="bg-slate-700/50 rounded-2xl p-4">
       <p className="text-white/90 mb-4">{message.message}</p>
       <div className="flex gap-4">
         <button
