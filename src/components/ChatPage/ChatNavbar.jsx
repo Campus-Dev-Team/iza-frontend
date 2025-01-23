@@ -153,7 +153,7 @@ export const ChatNavbar = () => {
 
           <button
             onClick={handleLogout}
-            className={`w-full flex items-center justify-center px-4 py-2 text-white/70 hover:text-red-400 hover:bg-red-400/5 rounded-lg 
+            className={`w-full flex items-center justify-center px-4 py-1 text-white/70 hover:text-red-400 hover:bg-red-400/5 rounded-lg 
                      group transition-all duration-300
                      ${isCollapsed ? "justify-center" : ""}`}
           >
