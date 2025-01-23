@@ -1,11 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useChat } from '../../context/ChatContext';
-import { AgeAvailabilityForm } from '../MessageTypes/AgeAvailabilityForm';
+import { useChat } from "../../context/ChatContext";
+import { AgeAvailabilityForm } from "../MessageTypes/AgeAvailabilityForm";
 import { AvailabilityForm } from "../MessageTypes/AvailabilityForm";
 import { DefaultMessage } from "../MessageTypes/DefaultMessage";
-import { LazyImage } from '../common/LazyImage';
+import { LazyImage } from "../common/LazyImage";
 import ReactMarkdown from "react-markdown";
-
 
 export const MessageList = () => {
   const { messages } = useChat();
@@ -27,7 +26,7 @@ export const MessageList = () => {
     // Avatar para el usuario
     return (
       <div className="w-full h-full flex items-center justify-center bg-cyan-400/20 text-white font-medium">
-        U
+        🚀
       </div>
     );
   };
@@ -49,7 +48,6 @@ export const MessageList = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]); // Se ejecuta cada vez que hay nuevos mensajes
-
 
   const renderMessage = (msg) => {
     switch (msg.type) {
@@ -84,7 +82,7 @@ export const MessageList = () => {
         );
     }
   };
-  
+
   return (
     <div
       ref={containerRef}
@@ -99,27 +97,39 @@ export const MessageList = () => {
               style={{
                 animationDelay: `${index * 0.1}s`,
               }}
-              className={`w-full flex ${!msg.isAI ? "justify-end" : "justify-start"}
+              className={`w-full flex ${
+                !msg.isAI ? "justify-end" : "justify-start"
+              }
                          animate-slide-in opacity-0`}
             >
               <div
                 className={`flex items-start gap-3 
                              ${msg.isAI ? "flex-row" : "flex-row-reverse"}
-                             ${msg.type === "age-form" || msg.type === "availability-form"
-                    ? "w-full sm:w-[80%] md:w-[60%]"
-                    : "max-w-[85%] sm:max-w-[75%] md:max-w-[65%]"
-                  }`}
+                             ${
+                               msg.type === "age-form" ||
+                               msg.type === "availability-form"
+                                 ? "w-full sm:w-[80%] md:w-[60%]"
+                                 : "max-w-[85%] sm:max-w-[75%] md:max-w-[65%]"
+                             }`}
               >
                 <div
                   className={`h-8 w-8 ring-2 rounded-full flex items-center 
                                justify-center overflow-hidden shrink-0
-                               ${msg.isAI ? "ring-cyan-400/20 bg-slate-800" : "ring-cyan-400/30 bg-slate-800/50"}`}
+                               ${
+                                 msg.isAI
+                                   ? "ring-cyan-400/20 bg-slate-800"
+                                   : "ring-cyan-400/30 bg-slate-800/50"
+                               }`}
                 >
                   {renderAvatar(msg.isAI)}
                 </div>
 
                 <div
-                  className={`flex-1 ${msg.type === "age-form" || msg.type === "availability-form" ? "w-full" : ""}`}
+                  className={`flex-1 ${
+                    msg.type === "age-form" || msg.type === "availability-form"
+                      ? "w-full"
+                      : ""
+                  }`}
                 >
                   {renderMessage(msg)}
                 </div>
@@ -131,5 +141,4 @@ export const MessageList = () => {
       </div>
     </div>
   );
-
 };
