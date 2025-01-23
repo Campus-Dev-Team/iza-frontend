@@ -59,7 +59,7 @@ export const MessageList = () => {
         return (
           <div
             className={`p-3 rounded-lg ${
-              msg.isAI ? "bg-gray-800 text-white" : "bg-cyan-400/10  text-white"
+              msg.isAI ? "bg-slate-700/50 text-white" : "bg-cyan-400/10  text-white"
             }`}
           >
             <ReactMarkdown

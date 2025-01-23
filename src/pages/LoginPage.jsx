@@ -133,6 +133,7 @@ const LoginPage = () => {
 
       console.log('telefono a enviar', validatedPhone, "//", updatedFormData.phone)
       loginStorage(formData.username, formData.city);
+      localStorage.setItem('city', formData.city);
       navigate("/chat");
     } catch (error) {
       try {
