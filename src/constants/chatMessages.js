@@ -3,7 +3,7 @@ export const DEFAULT_MESSAGES = {
     WELCOME: {
       id: 'welcome',
       avatar: 'B',
-      message: '¡Hola! Soy Iza, y estoy aquí para ayudarte a descubrir cómo Campuslands puede transformar tu futuro. 😊 ¿En qué te puedo ayudar hoy?',
+      message: '¡Hola! Soy Iza, y estoy aquí para ayudarte a descubrir cómo Campuslands puede transformar tu futuro 😊.',
       isAI: true
     },
     AGE_FORM: {
@@ -23,8 +23,7 @@ export const DEFAULT_MESSAGES = {
     NEXT_STEPS: {
       id: 'next-steps',
       avatar: 'C',
-      message: '🚀 ¡Excelente! ¡Gracias por tu respuesta! ✨, ¿En qué más puedo ayudarte? 🌟',
-      isAI: true,
+      message: '🚀 ¡Excelente! ¡Gracias por tu respuesta! ¿Hay algo específico en lo que necesites ayuda? 🌟',      isAI: true,
       type: 'next-steps-form'
     }
 
