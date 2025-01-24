@@ -115,6 +115,13 @@ export const ChatNavbar = () => {
             <h2 className="text-2xl font-bold text-cyan-400">IZA</h2>
             <p className="text-indigo-400 text-sm">Campus Support Team</p>
           </div>
+
+          <div className={`w-full space-y-2 ${isCollapsed ? "lg:hidden" : ""}`}>
+            <h3 className="text-lg font-medium text-white/90">Description</h3>
+            <p className="text-sm text-white/60 leading-relaxed">
+              Soy Iza, tu asistente en Campuslands. Estoy aquí para ayudarte a alcanzar tus sueños en tecnología con nuestro programa intensivo, que ofrece formación innovadora y oportunidades laborales 😊.
+            </p>
+          </div>
         </div>
 
         {/* Menú */}
