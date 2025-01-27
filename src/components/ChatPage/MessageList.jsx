@@ -6,7 +6,7 @@ import { LazyImage } from "../common/LazyImage";
 import ReactMarkdown from "react-markdown";
 import { ShortQuestionsForm } from "../MessageTypes/ShortsQuestionsForm";
 
-export const MessageList = () => {
+export const MessageList = ({ handleSendMessage }) => {
   const { messages } = useChat();
   const messagesEndRef = useRef(null);
   const containerRef = useRef(null);
@@ -70,7 +70,7 @@ export const MessageList = () => {
       case "availability-form":
         return <AvailabilityForm message={msg} />;
       case "short-questions":
-        return <ShortQuestionsForm onSelectQuestion={handleQuestion} />;
+        return <ShortQuestionsForm onSelectQuestion={handleSendMessage} />;
       default:
         return (
           <div className={`p-3 rounded-lg ${msg.isAI ? "bg-slate-700/50 text-white" : "bg-cyan-400/10 text-white"}`}>

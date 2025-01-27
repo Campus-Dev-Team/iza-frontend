@@ -8,7 +8,7 @@ export const ShortQuestionsForm = ({ onSelectQuestion }) => {
     },
     {
       id: 2,
-      text: "¿Como puedo entrar a Campuslands?",
+      text: "¿Cuanto cuesta?",
     },
     {
       id: 3,
@@ -25,8 +25,8 @@ export const ShortQuestionsForm = ({ onSelectQuestion }) => {
             key={question.id}
             onClick={() => onSelectQuestion(question.text)}
             className="w-full px-4 py-2 rounded-lg
-                       text-slate-900 text-left text-base
-                       bg-cyan-400 hover:bg-cyan-400/90 transition-colors"
+            text-white text-left text-base
+                       bg-slate-600 hover:bg-slate-500 transition-colors"
           >
             {question.text}
           </button>

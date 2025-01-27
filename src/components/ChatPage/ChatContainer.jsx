@@ -89,7 +89,7 @@ export const ChatContainer = () => {
 
   return (
     <div className="flex flex-col flex-1 h-[calc(100vh-4rem)]">
-      <MessageList />
+      <MessageList handleSendMessage={handleSendMessage} />
       {isLoading && <LoadingMessage />}
       <ChatInput onSendMessage={handleSendMessage} disabled={!isConnected} />
     </div>
