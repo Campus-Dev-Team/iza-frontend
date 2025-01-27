@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Mail, Lock } from "lucide-react";
+import { User, MapPin } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import campushm from "../assets/Campushm.png";
 import { useNavigate } from "react-router-dom";
@@ -238,7 +238,7 @@ const LoginPage = () => {
                   Nombre y Apellido
                 </Label>
                 <div className="relative group">
-                  <Mail
+                  <User
                     className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#A1A1AA] 
                     group-hover:text-[#00D8D6] transition-colors duration-200"
                     size={18}
@@ -261,7 +261,7 @@ const LoginPage = () => {
                   Ciudad
                 </Label>
                 <div className="relative group">
-                  <Lock
+                  <MapPin
                     className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#A1A1AA] 
                       group-hover:text-[#00D8D6] transition-colors duration-200"
                     size={18}
