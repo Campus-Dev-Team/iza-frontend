@@ -1,15 +1,21 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useChat } from "../../context/ChatContext";
 import { addAge } from "@/services/userService";
 
 export const AgeAvailabilityForm = ({ message }) => {
   const [age, setAge] = useState("");
   const { submitAge } = useChat();
+  const inputRef = useRef(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (age && age >= 10 && age <= 100) {
       submitAge(age);
+      setAge('');
+      // Quitar el focus del input
+      inputRef.current?.blur();
+      // Limpiar cualquier selección de texto
+      window.getSelection()?.removeAllRanges();
     }
 
     try {
@@ -23,11 +29,19 @@ export const AgeAvailabilityForm = ({ message }) => {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSubmit(e);
+    }
+  };
+
   return (
     <div className="bg-slate-700/50 rounded-2xl p-4 max-w-md">
       <p className="text-white mb-4">{message.message}</p>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
+          ref={inputRef}
           type="number"
           value={age}
           onChange={(e) => setAge(e.target.value)}
@@ -40,7 +54,7 @@ export const AgeAvailabilityForm = ({ message }) => {
         />
         <button
           type="submit"
-          disabled={!age || age < 10 || age > 100}
+          disabled={!age.trim() || age < 10 || age > 100}
           className="w-full bg-cyan-400 text-slate-900 px-4 py-2 rounded-lg
                        hover:bg-cyan-400/90 disabled:opacity-50 
                        disabled:cursor-not-allowed"
