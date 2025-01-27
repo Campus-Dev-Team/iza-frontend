@@ -21,7 +21,7 @@ export const ChatPage = () => {
       // Pantalla de carga con GIF
       <div className="h-screen flex justify-center items-center bg-slate-900">
         <img
-          src="/public/gifs/loading.gif" // Ruta al GIF de carga
+          src="https://camper-stories.s3.us-east-2.amazonaws.com/assets/Related+image.gif" // Ruta al GIF de carga
           alt="Cargando..."
           className="w-48 h-48 rounded-full "
           style={{ border: '10px solid #22d3ee' }}
