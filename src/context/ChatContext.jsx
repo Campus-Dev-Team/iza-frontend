@@ -36,10 +36,11 @@ export const ChatProvider = ({ children }) => {
         message: hasAvailability ? 'Sí, tengo disponibilidad' : 'No tengo disponibilidad',
         isAI: false
       },
-      {
-        ...DEFAULT_MESSAGES.NEXT_STEPS,
-        id: Date.now() + 1
-      }
+      DEFAULT_MESSAGES.QUESTIONS_FORM,
+      // {
+      //   ...DEFAULT_MESSAGES.NEXT_STEPS,
+      //   id: Date.now() + 1
+      // }
     ]);
     setIsInputEnabled(true); 
   };

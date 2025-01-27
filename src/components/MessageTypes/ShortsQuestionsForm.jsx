@@ -4,11 +4,11 @@ export const ShortQuestionsForm = ({ onSelectQuestion }) => {
   const questions = [
     {
       id: 1,
-      text: "¿Cuanto Vale?",
+      text: "¿Que es campuslands?",
     },
     {
-      id: 2, 
-      text: "¿Que es campuslands?",
+      id: 2,
+      text: "¿Como puedo entrar a Campuslands?",
     },
     {
       id: 3,
@@ -17,18 +17,16 @@ export const ShortQuestionsForm = ({ onSelectQuestion }) => {
   ];
 
   return (
-    <div className="bg-slate-700/50 rounded-2xl p-4 max-w-md w-full">
-      <p className="text-white mb-4">Selecciona una pregunta frecuente:</p>
-      <div className="space-y-3">
+    <div className="p-4 rounded-2xl bg-slate-700/50 max-w-lg w-[90%] sm:w-[80%] md:w-[70%]">
+      <p className="text-white/90 mb-4">¡Te puedo ayudar con algunas preguntas frecuentes! 🤔</p>
+      <div className="space-y-2">
         {questions.map((question) => (
           <button
             key={question.id}
             onClick={() => onSelectQuestion(question.text)}
-            className="w-full bg-slate-800/50 text-white px-4 py-3 rounded-lg
-                     border border-cyan-400/10 hover:bg-slate-800/70
-                     focus:ring-2 focus:ring-cyan-400/30 
-                     focus:border-cyan-400/30 transition-all
-                     text-left hover:border-cyan-400/30"
+            className="w-full px-4 py-2 rounded-lg
+                       text-slate-900 text-left text-base
+                       bg-cyan-400 hover:bg-cyan-400/90 transition-colors"
           >
             {question.text}
           </button>

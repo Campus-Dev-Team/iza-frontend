@@ -11,7 +11,6 @@ export const MessageList = () => {
   const messagesEndRef = useRef(null);
   const containerRef = useRef(null);
   const [autoScroll, setAutoScroll] = useState(true);
-  const [showQuestions, setShowQuestions] = useState(false);
 
   const renderAvatar = (isAI) => {
     if (isAI) {
@@ -69,19 +68,7 @@ export const MessageList = () => {
       case "age-form":
         return <AgeAvailabilityForm message={msg} />;
       case "availability-form":
-        return (
-          <div className="space-y-4">
-            <AvailabilityForm
-              message={msg}
-              onResponse={(isAvailable) => {
-                setShowQuestions(true);
-              }}
-            />
-            {showQuestions &&
-              <ShortQuestionsForm onSelectQuestion={handleQuestion} />
-            }
-          </div>
-        );
+        return <AvailabilityForm message={msg} />;
       case "short-questions":
         return <ShortQuestionsForm onSelectQuestion={handleQuestion} />;
       default:
@@ -105,28 +92,31 @@ export const MessageList = () => {
   };
 
   return (
-    <div ref={containerRef} onScroll={handleScroll}
-      className="flex-1 overflow-y-auto scrollbar-custom relative bg-[#0F172A]">
+    <div
+      ref={containerRef}
+      onScroll={handleScroll}
+      className="flex-1 overflow-y-auto scrollbar-custom relative bg-[#0F172A]"
+    >
       <div className="absolute inset-0 py-6 px-4">
         <div className="max-w-[100%] mx-auto space-y-6">
           {messages.map((msg, index) => (
-            <div key={msg.id}
+            <div
+              key={msg.id}
               style={{ animationDelay: `${index * 0.1}s` }}
               className={`w-full flex ${!msg.isAI ? "justify-end" : "justify-start"} 
-                            animate-slide-in opacity-0`}>
+                animate-slide-in opacity-0`}
+            >
               <div className={`flex items-start gap-3 
-                              ${msg.isAI ? "flex-row" : "flex-row-reverse"}
-                              ${msg.type === "age-form" || msg.type === "availability-form"
-                  ? "w-full sm:w-[80%] md:w-[60%]"
-                  : "max-w-[85%] sm:max-w-[75%] md:max-w-[65%]"}`}>
+                ${msg.isAI ? "flex-row" : "flex-row-reverse"}
+                ${msg.type ? "w-full sm:w-[80%] md:w-[60%]" : "max-w-[85%] sm:max-w-[75%] md:max-w-[65%]"}`}
+              >
                 <div className={`h-8 w-8 ring-2 rounded-full flex items-center 
-                                justify-center overflow-hidden shrink-0
-                                ${msg.isAI ? "ring-cyan-400/20 bg-slate-800"
-                    : "ring-cyan-400/30 bg-slate-800/50"}`}>
+                  justify-center overflow-hidden shrink-0
+                  ${msg.isAI ? "ring-cyan-400/20 bg-slate-800" : "ring-cyan-400/30 bg-slate-800/50"}`}
+                >
                   {renderAvatar(msg.isAI)}
                 </div>
-                <div className={`flex-1 ${msg.type === "age-form" ||
-                  msg.type === "availability-form" ? "w-full" : ""}`}>
+                <div className={`flex-1 ${msg.type ? "w-full" : ""}`}>
                   {renderMessage(msg)}
                 </div>
               </div>
