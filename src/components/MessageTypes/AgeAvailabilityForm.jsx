@@ -52,7 +52,7 @@ export const AgeAvailabilityForm = ({ message }) => {
             disabled
             className="w-full bg-slate-800/30 rounded-lg px-4 py-2 text-white/50 
                      border border-cyan-400/5 cursor-not-allowed"
-            placeholder="Pregunta respondida"
+            placeholder="Enviado"
           />
         </form>
       </div>

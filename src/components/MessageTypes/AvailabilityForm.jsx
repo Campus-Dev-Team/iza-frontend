@@ -36,7 +36,7 @@ export const AvailabilityForm = ({ message }) => {
             disabled
             className="flex-1 px-4 py-2 rounded-lg bg-slate-600/30 text-white/50 cursor-not-allowed"
           >
-            Pregunta respondida
+            Enviado
           </button>
         </div>
       </div>
