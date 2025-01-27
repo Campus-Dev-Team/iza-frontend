@@ -10,7 +10,7 @@ export const ChatContainer = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleSendMessage = (message) => {
+  const handleSendMessage = async (message) => {
     if (!message.trim() || !isConnected || !isInputEnabled) return;
 
     const userName = localStorage.getItem('userName');
@@ -26,19 +26,21 @@ export const ChatContainer = () => {
 
     setIsLoading(true)
 
-    // Enviar mensaje al WebSocket
-    const fullMessage = {
-      type: "message",
-      message: `Mi nombre es: ${userName} y mi pregunta es: ${message}`,
-      city: userCity,
-    };
+
 
     try {
-      wsService.sendMessage(fullMessage);
+      // Enviar mensaje al WebSocket
+      const fullMessage = {
+        type: "message",
+        message: `Mi nombre es: ${userName} y mi pregunta es: ${message}`,
+        city: userCity,
+      };
+
+      await wsService.sendMessage(fullMessage);
+      return true;
     } catch (error) {
       console.error("Error al enviar mensaje:", error);
       setIsLoading(false)
-
       setMessages(prev => [...prev, {
         id: Date.now(),
         avatar: "C",

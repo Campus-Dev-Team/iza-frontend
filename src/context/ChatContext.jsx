@@ -11,6 +11,7 @@ export const ChatProvider = ({ children }) => {
     hasAvailability: null
   });
   const [isInputEnabled, setIsInputEnabled] = useState(false);
+  const [isSending, setIsSending] = useState(false); // Agregamos el estado isSending
 
   const submitAge = (age) => {
     setUserInfo(prev => ({ ...prev, age }));
@@ -27,22 +28,27 @@ export const ChatProvider = ({ children }) => {
   };
 
   const submitAvailability = (hasAvailability) => {
+    const currentTime = Date.now()
     setUserInfo(prev => ({ ...prev, hasAvailability }));
     setMessages(prev => [
       ...prev,
       {
-        id: Date.now(),
+        id: currentTime,
         avatar: 'U',
         message: hasAvailability ? 'Sí, tengo disponibilidad' : 'No tengo disponibilidad',
         isAI: false
       },
-      DEFAULT_MESSAGES.QUESTIONS_FORM,
+      {
+        ...DEFAULT_MESSAGES.QUESTIONS_FORM,
+        id: currentTime + 1 // Aseguramos ID único
+      }
+
       // {
       //   ...DEFAULT_MESSAGES.NEXT_STEPS,
       //   id: Date.now() + 1
       // }
     ]);
-    setIsInputEnabled(true); 
+    setIsInputEnabled(true);
   };
 
   return (
@@ -52,6 +58,8 @@ export const ChatProvider = ({ children }) => {
       userInfo,
       isInputEnabled,
       submitAge,
+      isSending,
+      setIsSending, // Exportamos el setter
       submitAvailability
     }}>
       {children}

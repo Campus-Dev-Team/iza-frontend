@@ -1,11 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { SendHorizonal } from 'lucide-react';
 import { useChat } from '@/context/ChatContext';
 import { addMessage } from "@/services/messagesService";
 
 export const ChatInput = ({ onSendMessage, disabled }) => {
   const [message, setMessage] = useState("");
-  const { isInputEnabled } = useChat();
+  const { isSending, setIsSending, isInputEnabled } = useChat();
+  const inputRef = useRef(null);
+  const submitTimeoutRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (submitTimeoutRef.current) {
+        clearTimeout(submitTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const handleAddMessage = async () => {
     try {
@@ -19,10 +29,41 @@ export const ChatInput = ({ onSendMessage, disabled }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (message.trim() && isInputEnabled) {
-      onSendMessage(message);
-      setMessage("");
-      handleAddMessage(message);
+
+    // Evitar envíos múltiples
+    if (isSending || !message.trim() || disabled || !isInputEnabled) {
+      return;
+    }
+    try {
+      setIsSending(true);
+      const messageToSend = message;
+      setMessage(''); // Limpiamos el input inmediatamente
+      
+      // Quitamos el foco y limpiamos la selección
+      inputRef.current?.blur();
+      window.getSelection()?.removeAllRanges();
+
+      await onSendMessage(messageToSend);
+      await handleAddMessage(messageToSend);
+
+    } catch (error) {
+      console.error('Error al enviar mensaje:', error);
+    } finally {
+      // Agregamos un pequeño delay antes de permitir otro envío
+      submitTimeoutRef.current = setTimeout(() => {
+        setIsSending(false);
+      }, 1000);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    // Prevenir el comportamiento por defecto si ya se está enviando
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      
+      if (!isSending && message.trim() && isInputEnabled && !disabled) {
+        handleSubmit(e);
+      }
     }
   };
 
@@ -30,7 +71,10 @@ export const ChatInput = ({ onSendMessage, disabled }) => {
     <form onSubmit={handleSubmit} className="p-4 bg-slate-800/30 backdrop-blur-xl border-t border-slate-700/30">
       <div className="max-w-3xl mx-auto flex items-center gap-3">
         <input
+          ref={inputRef}
+          type="text"
           value={message}
+          onKeyDown={handleKeyDown}
           onChange={(e) => setMessage(e.target.value)}
           placeholder={!isInputEnabled ? "Por favor, responde las preguntas anteriores..." : "Escribe tú mensaje ..."}
           className="flex-1 bg-slate-800/50 border border-cyan-400/10 rounded-xl
@@ -38,7 +82,7 @@ export const ChatInput = ({ onSendMessage, disabled }) => {
                    focus:ring-2 focus:ring-cyan-400/30 
                    focus:border-cyan-400/30 outline-none
                    transition-all duration-200"
-          disabled={disabled || !isInputEnabled}
+          disabled={disabled || !isInputEnabled || isSending}
         />
         <button
           type="submit"
@@ -48,9 +92,9 @@ export const ChatInput = ({ onSendMessage, disabled }) => {
                    hover:bg-cyan-400/90 hover:scale-105
                    active:scale-95
                    ${disabled || !isInputEnabled ? "opacity-50 cursor-not-allowed" : "hover:bg-cyan-400/90"}`}
-          disabled={disabled || !isInputEnabled}
+          disabled={disabled || isSending || !message.trim() || !isInputEnabled}
         >
-          <SendHorizonal className="h-5 w-5" />
+          <SendHorizonal className="h-5 w-5" /> 
         </button>
       </div>
     </form>

@@ -45,19 +45,6 @@ export const MessageList = ({ handleSendMessage }) => {
     }
   };
 
-  const handleQuestion = (question) => {
-    setMessages(prev => [...prev, {
-      id: Date.now(),
-      avatar: "U",
-      message: question,
-      isAI: false,
-    }]);
-
-    wsService.sendMessage({
-      type: "message",
-      message: question
-    });
-  };
 
   useEffect(() => {
     scrollToBottom();
@@ -74,18 +61,7 @@ export const MessageList = ({ handleSendMessage }) => {
       default:
         return (
           <div className={`p-3 rounded-lg ${msg.isAI ? "bg-slate-700/50 text-white" : "bg-cyan-400/10 text-white"}`}>
-            <ReactMarkdown
-              components={{
-                a: ({ href, children }) => (
-                  <a href={href} target="_blank" rel="noopener noreferrer"
-                    className="text-cyan-400 underline hover:text-cyan-300">
-                    {children}
-                  </a>
-                ),
-              }}
-            >
-              {msg.message}
-            </ReactMarkdown>
+            <ReactMarkdown>{msg.message}</ReactMarkdown>
           </div>
         );
     }
