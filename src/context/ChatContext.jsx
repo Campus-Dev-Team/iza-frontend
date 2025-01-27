@@ -12,8 +12,14 @@ export const ChatProvider = ({ children }) => {
   });
   const [isInputEnabled, setIsInputEnabled] = useState(false);
   const [isSending, setIsSending] = useState(false); // Agregamos el estado isSending
+  const [answeredQuestions, setAnsweredQuestions] = useState({
+    age: false,
+    availability: false
+  });
 
   const submitAge = (age) => {
+    if (answeredQuestions.age) return; // Prevenir múltiples envíos
+
     setUserInfo(prev => ({ ...prev, age }));
     setMessages(prev => [
       ...prev,
@@ -25,9 +31,12 @@ export const ChatProvider = ({ children }) => {
       },
       DEFAULT_MESSAGES.AVAILABILITY_FORM
     ]);
+    setAnsweredQuestions(prev => ({ ...prev, age: true }));
   };
 
   const submitAvailability = (hasAvailability) => {
+    if (answeredQuestions.availability) return; // Prevenir múltiples envíos
+
     const currentTime = Date.now()
     setUserInfo(prev => ({ ...prev, hasAvailability }));
     setMessages(prev => [
@@ -48,6 +57,7 @@ export const ChatProvider = ({ children }) => {
       //   id: Date.now() + 1
       // }
     ]);
+    setAnsweredQuestions(prev => ({ ...prev, availability: true }));
     setIsInputEnabled(true);
   };
 
@@ -60,7 +70,8 @@ export const ChatProvider = ({ children }) => {
       submitAge,
       isSending,
       setIsSending, // Exportamos el setter
-      submitAvailability
+      submitAvailability,
+      answeredQuestions
     }}>
       {children}
     </ChatContext.Provider>
