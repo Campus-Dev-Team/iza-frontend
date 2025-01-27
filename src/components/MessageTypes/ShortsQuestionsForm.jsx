@@ -35,7 +35,7 @@ export const ShortQuestionsForm = ({ onSelectQuestion }) => {
 
   return (
     <div className="p-4 rounded-2xl bg-slate-700/50 max-w-lg w-[90%] sm:w-[80%] md:w-[70%]">
-      <p className="text-white/90 mb-4">¡Te puedo ayudar con algunas preguntas frecuentes! 🤔</p>
+      <p className="text-white/90 mb-4">¿En qué te puedo colaborar hoy? 🤔</p>
       <div className="space-y-2">
         {questions.map((question) => (
           <button
@@ -43,8 +43,8 @@ export const ShortQuestionsForm = ({ onSelectQuestion }) => {
             onClick={() => handleQuestionClick(question.text)}
             disabled={isSending}
             className={`w-full px-4 py-2 rounded-lg
-                       text-slate-900 text-left text-base
-                       bg-cyan-400 hover:bg-cyan-400/90 transition-colors
+                      text-left text-base text-white
+                       bg-slate-600/50 hover:bg-slate-500 transition-colors
                        disabled:opacity-50 disabled:cursor-not-allowed`}
           >
             {question.text}
