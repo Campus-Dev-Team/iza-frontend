@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { login } from "../services/loginService";
 import { register } from "@/services/registerService";
 import { useAuth } from "@/context/AuthContext";
+import { newChat } from "@/services/chatService";
 
 const phoneInputStyles = {
   container: `flex-1 min-w-0 block w-full`,
@@ -41,18 +42,21 @@ const LoginPage = () => {
   const phoneInputRef = useRef(null);
   const itiRef = useRef(null);
   const [formData, setFormData] = useState({
-    telefono: "",
+    phone: "",
     username: "",
     city: "",
   });
   const [updatedFormData, setUpdatedFormData] = useState({
-    telefono: "",
+    phone: "",
     username: "",
     city: "",
   });
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const cities = ["Bucaramanga", "Bogotá"];
+  const cities = [1, 2];
+  const [chatType, setChatType] = useState({
+    chatType: "",
+  });
   const { loginStorage } = useAuth();
 
   useEffect(() => {
@@ -127,7 +131,7 @@ const LoginPage = () => {
 
     setUpdatedFormData({
       ...formData,
-      telefono: validatedPhone,
+      phone: validatedPhone,
     });
 
     try {
@@ -137,14 +141,14 @@ const LoginPage = () => {
         "telefono a enviar",
         validatedPhone,
         "//",
-        updatedFormData.telefono
+        updatedFormData.phone
       );
 
       console.log("formdata updated", updatedFormData);
 
       await login({
         ...formData,
-        telefono: validatedPhone
+        phone: validatedPhone
       });
 
       console.log('telefono a enviar', validatedPhone, "//", updatedFormData.phone)
@@ -155,9 +159,20 @@ const LoginPage = () => {
       try {
         const response = await register({
           ...formData,
-          telefono: validatedPhone
+          phone: validatedPhone
         });
         if (response) {
+
+          try {
+            console.log("intentando registrar")
+            await newChat({
+              ...chatType,
+              chatType: "WEB"
+            })
+            console.log("chat creado correctamente")
+          } catch (error) {
+            console.error("Error creando el chat",error)
+          }
 
           loginStorage(formData.username, formData.city);
           navigate("/chat");
@@ -223,7 +238,7 @@ const LoginPage = () => {
                 <div className="flex">
                   <input
                     type="tel"
-                    name="telefono"
+                    name="phone"
                     ref={phoneInputRef}
                     required
                     className={phoneInputStyles.input}
