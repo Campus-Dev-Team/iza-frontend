@@ -1,12 +1,13 @@
-// context/AuthContext.jsx
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import axios from 'axios';
+import { isTokenExpired } from '../lib/tokenUtils';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    // Verificar si hay un token y nombre de usuario al iniciar
-    return localStorage.getItem('userName') !== null;
+    const token = localStorage.getItem('token');
+    return token && !isTokenExpired(token);
   });
 
   const loginStorage = (userName, city) => {
@@ -21,6 +22,34 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('token');
     setIsAuthenticated(false);
   };
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    const checkToken = () => {
+      const token = localStorage.getItem('token');
+      if (isTokenExpired(token)) {
+        logout();
+      }
+    };
+
+    const interval = setInterval(checkToken, 30000);
+    
+    const interceptor = axios.interceptors.response.use(
+      response => response,
+      error => {
+        if (error.response?.status === 401) {
+          logout();
+        }
+        return Promise.reject(error);
+      }
+    );
+
+    return () => {
+      clearInterval(interval);
+      axios.interceptors.response.eject(interceptor);
+    };
+  }, [isAuthenticated]);
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, loginStorage, logout }}>
