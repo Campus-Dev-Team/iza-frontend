@@ -12,6 +12,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { LazyImage } from "../common/LazyImage";
+import { wsService } from "@/services/wssChatService";
 
 // Componente personalizado para TikTok
 const TikTokIcon = ({ className }) => (
@@ -57,6 +58,7 @@ export const ChatNavbar = () => {
 
   const handleLogout = () => {
     logout();
+    wsService.disconnect();
     navigate("/auth/login");
   };
 

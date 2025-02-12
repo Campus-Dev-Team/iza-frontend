@@ -31,9 +31,9 @@ export const ChatInput = ({ onSendMessage, disabled }) => {
     e.preventDefault();
 
     // Evitar envíos múltiples
-    // if (isSending || !message.trim() || disabled || !isInputEnabled) {
-    //   return;
-    // }
+    if (isSending || !message.trim() || disabled || !isInputEnabled) {
+      return;
+    }
     try {
       setIsSending(true);
       const messageToSend = message;

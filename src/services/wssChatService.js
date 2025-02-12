@@ -8,7 +8,7 @@ class WebSocketService {
     this.isManuallyDisconnected = false; 
   }
 
-  connect(chatId, userId) {
+  connect() {
     if (this.socket && (this.socket.readyState === WebSocket.OPEN || this.socket.readyState === WebSocket.CONNECTING)) {
       console.log("WebSocket ya está conectado o en proceso de conexión.");
       return this.socket;
