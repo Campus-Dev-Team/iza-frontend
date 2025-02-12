@@ -5,26 +5,51 @@ import { AvailabilityForm } from "../MessageTypes/AvailabilityForm";
 import { LazyImage } from "../common/LazyImage";
 import ReactMarkdown from "react-markdown";
 import { ShortQuestionsForm } from "../MessageTypes/ShortsQuestionsForm";
+import { getMessagesByChatId } from "@/services/messagesService";
+import { getChatId } from "@/services/chatService";
 
 export const MessageList = ({ handleSendMessage }) => {
   const { messages } = useChat();
   const messagesEndRef = useRef(null);
+  const [messagesPrev, setMessagesPrev] = useState([]);
+  const [chatId, setChatId] = useState();
   const containerRef = useRef(null);
   const [autoScroll, setAutoScroll] = useState(true);
 
-  const renderAvatar = (isAI) => {
-    if (isAI) {
-      return (
-        <LazyImage
-          src="https://camper-stories.s3.us-east-2.amazonaws.com/assets/iza-campus.webp"
-          alt="Iza Campus"
-          className="w-full h-full object-cover"
-        />
-      );
-    }
+  useEffect(() => {
+    const fetchChatId = async () => {
+      try {
+        const response = await getChatId();
+        setChatId(response.data);
+      } catch (error) {
+        console.error("Error loading chat id:", error);
+      }
+    };
 
-    // Avatar para el usuario
-    return (
+    fetchChatId();
+  }, []);
+  useEffect(() => {
+    const loadMessages = async () => {
+      if (!chatId) return;
+      try {
+        const messages = await getMessagesByChatId(chatId);
+        setMessagesPrev(messages.data);
+      } catch (error) {
+        console.error("Error loading messages:", error);
+      }
+    };
+
+    loadMessages();
+  }, [chatId]);
+
+  const renderAvatar = (isAI) => {
+    return isAI ? (
+      <LazyImage
+        src="https://camper-stories.s3.us-east-2.amazonaws.com/assets/iza-campus.webp"
+        alt="Iza Campus"
+        className="w-full h-full object-cover"
+      />
+    ) : (
       <div className="w-full h-full flex items-center justify-center bg-cyan-400/20 text-white font-medium">
         🚀
       </div>
@@ -45,10 +70,13 @@ export const MessageList = ({ handleSendMessage }) => {
     }
   };
 
+  useEffect(() => {
+    scrollToBottom();
+  }, [messagesPrev]);
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]); // Se ejecuta cada vez que hay nuevos mensajes
+  }, [messages]);
 
   const renderMessage = (msg) => {
     switch (msg.type) {
@@ -60,7 +88,36 @@ export const MessageList = ({ handleSendMessage }) => {
         return <ShortQuestionsForm onSelectQuestion={handleSendMessage} />;
       default:
         return (
-          <div className={`p-3 rounded-lg ${msg.isAI ? "bg-slate-700/50 text-white" : "bg-cyan-400/10 text-white"}`}>
+          <div
+            className={`p-3 rounded-lg ${
+              msg.messageType === "USER"
+                ? "bg-slate-700/50 text-white"
+                : "bg-cyan-400/10 text-white"
+            }`}
+          >
+            <ReactMarkdown>{msg.content}</ReactMarkdown>
+          </div>
+        );
+    }
+  };
+
+  const renderMessageWebSocket = (msg) => {
+    switch (msg.type) {
+      case "age-form":
+        return <AgeAvailabilityForm message={msg} />;
+      case "availability-form":
+        return <AvailabilityForm message={msg} />;
+      case "short-questions":
+        return <ShortQuestionsForm onSelectQuestion={handleSendMessage} />;
+      default:
+        return (
+          <div
+            className={`p-3 rounded-lg ${
+              msg.isAI
+                ? "bg-slate-700/50 text-white"
+                : "bg-cyan-400/10 text-white"
+            }`}
+          >
             <ReactMarkdown>{msg.message}</ReactMarkdown>
           </div>
         );
@@ -71,26 +128,35 @@ export const MessageList = ({ handleSendMessage }) => {
     <div
       ref={containerRef}
       onScroll={handleScroll}
-      className="flex-1 overflow-y-auto scrollbar-custom relative bg-[#0F172A]"
+      className="flex-1 overflow-y-auto scrollbar-custom relative bg-[#0F172A] mb-4"
     >
       <div className="absolute inset-0 py-6 px-4">
         <div className="max-w-[100%] mx-auto space-y-6">
-          {messages.map((msg, index) => (
+          {messagesPrev.map((msg, index) => (
             <div
               key={msg.id}
               style={{ animationDelay: `${index * 0.1}s` }}
-              className={`w-full flex ${!msg.isAI ? "justify-end" : "justify-start"} 
-                animate-slide-in opacity-0`}
+              className={`w-full flex ${
+                msg.messageType === "IA" ? "justify-start" : "justify-end"
+              } 
+                animate-slide-in opacity-100`}
             >
-              <div className={`flex items-start gap-3 
-                ${msg.isAI ? "flex-row" : "flex-row-reverse"}
-                ${msg.type ? "w-full sm:w-[80%] md:w-[60%]" : "max-w-[85%] sm:max-w-[75%] md:max-w-[65%]"}`}
+              <div
+                className={`flex items-start gap-3 ${
+                  msg.messageType === "IA"
+                    ? "flex-row max-w-[70%]"
+                    : "flex-row-reverse"
+                }`}
               >
-                <div className={`h-8 w-8 ring-2 rounded-full flex items-center 
-                  justify-center overflow-hidden shrink-0
-                  ${msg.isAI ? "ring-cyan-400/20 bg-slate-800" : "ring-cyan-400/30 bg-slate-800/50"}`}
+                <div
+                  className={`h-8 w-8 ring-2 rounded-full flex items-center justify-center overflow-hidden shrink-0 
+                  ${
+                    msg.messageType === "IA"
+                      ? "ring-cyan-400/20 bg-slate-800"
+                      : "ring-cyan-400/30 bg-slate-800/50"
+                  }`}
                 >
-                  {renderAvatar(msg.isAI)}
+                  {renderAvatar(msg.messageType === "IA")}
                 </div>
                 <div className={`flex-1 ${msg.type ? "w-full" : ""}`}>
                   {renderMessage(msg)}
@@ -98,7 +164,39 @@ export const MessageList = ({ handleSendMessage }) => {
               </div>
             </div>
           ))}
-          <div ref={messagesEndRef} className="h-4" />
+
+          {messages.map((msg, index) => (
+            <div
+              key={msg.id}
+              style={{
+                animationDelay: `${(index + messagesPrev.length) * 0.1}s`,
+              }}
+              className={`w-full flex ${
+                !msg.isAI ? "justify-end" : "justify-start"
+              } animate-slide-in opacity-100`}
+            >
+              <div
+                className={`flex items-start gap-3 ${
+                  msg.isAI ? "flex-row max-w-[80%]" : "flex-row-reverse"
+                }`}
+              >
+                <div
+                  className={`h-8 w-8 ring-2 rounded-full flex items-center justify-center overflow-hidden shrink-0
+                  ${
+                    msg.isAI
+                      ? "ring-cyan-400/20 bg-slate-800"
+                      : "ring-cyan-400/30 bg-slate-800/50"
+                  }`}
+                >
+                  {renderAvatar(msg.isAI)}
+                </div>
+                <div className={`flex-1 ${msg.type ? "w-full" : ""}`}>
+                  {renderMessageWebSocket(msg)}
+                </div>
+              </div>
+            </div>
+          ))}
+          <div ref={messagesEndRef} />
         </div>
       </div>
     </div>

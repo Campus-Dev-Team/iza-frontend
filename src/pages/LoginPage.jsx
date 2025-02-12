@@ -53,7 +53,17 @@ const LoginPage = () => {
   });
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const cities = [1, 2];
+  const cities = [
+    {
+      name: "Bucaramanga",
+      id: 1
+    },
+    {
+      name: "Bogota",
+      id: 2
+    }
+  ];
+  
   const [chatType, setChatType] = useState({
     chatType: "",
   });
@@ -292,8 +302,8 @@ const LoginPage = () => {
                   >
                     <option value="">Seleccione su ciudad</option>
                     {cities.map((city) => (
-                      <option key={city} value={city}>
-                        {city}
+                      <option key={city.id} value={city.id}>
+                        {city.name}
                       </option>
                     ))}
                   </select>
