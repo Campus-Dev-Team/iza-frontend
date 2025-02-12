@@ -96,15 +96,13 @@ const LoginPage = () => {
   const validarTelefono = (numero) => {
     if (!numero) return null;
 
-    // Convertir a string y eliminar todo lo que no sea número
+
     let numeroLimpio = numero.toString().replace(/\D/g, "");
 
-    // Si ya tiene el prefijo 57, dejarlo como está
     if (numeroLimpio.startsWith("57")) {
       return numeroLimpio;
     }
 
-    // Si es un número válido de Colombia (10 dígitos comenzando con 3)
     if (numeroLimpio.length === 10 && numeroLimpio.startsWith("3")) {
       // Agregar el prefijo 57
       return `57${numeroLimpio}`;
@@ -163,7 +161,8 @@ const LoginPage = () => {
 
       console.log('telefono a enviar', validatedPhone, "//", updatedFormData.phone)
       loginStorage(formData.username, formData.city);
-      localStorage.setItem('city', formData.city);
+      const cityName = cities.find(city => city.id === parseInt(formData.city))?.name || "";
+      localStorage.setItem('city', cityName);
       navigate("/chat");
     } catch (error) {
       try {

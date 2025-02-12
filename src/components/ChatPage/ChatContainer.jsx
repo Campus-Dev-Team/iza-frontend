@@ -14,7 +14,7 @@ export const ChatContainer = () => {
     if (!message.trim() || !isConnected || !isInputEnabled) return;
 
     const userName = localStorage.getItem('userName');
-    const userCity = localStorage.getItem('userCity');
+    const userCity = localStorage.getItem('city');
 
     // Agregar mensaje del usuario al chat
     setMessages(prev => [...prev, {
@@ -31,7 +31,7 @@ export const ChatContainer = () => {
     try {
       const fullMessage = {
         type: "message",
-        message: `Mi nombre es: ${userName}, soy de la ciudad: ${userCity} y mi pregunta es: ${message}`,
+        message: `Mi nombre es: ${userName}, (NO me saludes, solo usa mi nombre)soy de la ciudad: ${userCity} y mi pregunta es: ${message}`,
         city: userCity,
         from: "WEB"
       };
