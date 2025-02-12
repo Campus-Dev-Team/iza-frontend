@@ -1,5 +1,5 @@
-import React from 'react';
-import { useChat } from '@/context/ChatContext';
+import React from "react";
+import { useChat } from "@/context/ChatContext";
 
 export const ShortQuestionsForm = ({ onSelectQuestion }) => {
   const { isSending, setIsSending } = useChat();
@@ -21,7 +21,7 @@ export const ShortQuestionsForm = ({ onSelectQuestion }) => {
 
   const handleQuestionClick = async (questionText) => {
     if (isSending) return; // Prevenir múltiples clics
-    
+
     try {
       setIsSending(true);
       await onSelectQuestion(questionText);

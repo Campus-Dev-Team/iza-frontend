@@ -1,7 +1,7 @@
 import axios from "axios";
 import { endpoints } from "./apiConfig";
 
-export const addMessage = async (data) => {
+export const newChat = async (data) => {
   try {
     const token = localStorage.getItem("token");
 
@@ -16,7 +16,7 @@ export const addMessage = async (data) => {
       },
     };
 
-    const response = await axios.post(endpoints.messages, data, config);
+    const response = await axios.post(endpoints.chat, data, config);
 
     return response;
   } catch (error) {
@@ -24,7 +24,8 @@ export const addMessage = async (data) => {
     throw error;
   }
 };
-export const getMessagesByChatId = async (chatId) => {
+
+export const getChatId = async () => {
   try {
     const token = localStorage.getItem("token");
 
@@ -39,9 +40,7 @@ export const getMessagesByChatId = async (chatId) => {
       },
     };
 
-    const endpoint = `${endpoints.getMessages}/${chatId}`
-
-    const response = await axios.get(endpoint, config);
+    const response = await axios.get(endpoints.chatId, config);
 
     return response;
   } catch (error) {
@@ -49,3 +48,4 @@ export const getMessagesByChatId = async (chatId) => {
     throw error;
   }
 };
+

@@ -1,11 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { ChatProvider } from '../context/ChatContext';
-import { ChatNavbar } from '../components/ChatPage/ChatNavbar';
-import { ChatHeader } from '../components/ChatPage/ChatHeader';
-import { ChatContainer } from '../components/ChatPage/ChatContainer';
+import React, { useState, useEffect } from "react";
+import { ChatProvider } from "../context/ChatContext";
+import { ChatNavbar } from "../components/ChatPage/ChatNavbar";
+import { ChatHeader } from "../components/ChatPage/ChatHeader";
+import { ChatContainer } from "../components/ChatPage/ChatContainer";
 
 export const ChatPage = () => {
   const [isLoading, setIsLoading] = useState(true);
+
+  // Efecto para forzar una recarga única de la página
+  // useEffect(() => {
+  //   if (isLoading) {
+  //     window.location.reload();
+  //   }
+  // }, []);
 
   // Simula un tiempo de carga
   useEffect(() => {
@@ -24,7 +31,7 @@ export const ChatPage = () => {
           src="https://camper-stories.s3.us-east-2.amazonaws.com/assets/Related+image.gif" // Ruta al GIF de carga
           alt="Cargando..."
           className="w-48 h-48 rounded-full "
-          style={{ border: '10px solid #22d3ee' }}
+          style={{ border: "10px solid #22d3ee" }}
         />
       </div>
     );
