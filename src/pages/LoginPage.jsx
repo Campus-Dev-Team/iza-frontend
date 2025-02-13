@@ -8,12 +8,7 @@ import { register } from "@/services/registerService";
 import { useAuth } from "@/context/AuthContext";
 import { newChat } from "@/services/chatService";
 
-const phoneInputStyles = {
-  container: `flex-1 min-w-0 block w-full`,
-  input: `w-full min-w-[334px] h-10 px-3 py-2.5 rounded-lg bg-[#2A303C] text-white
-          border border-[#00D8D6] focus:ring-2 focus:ring-[#00D8D6] focus:ring-offset-0
-          transition-all duration-200 hover:bg-[#2A303C]/80`,
-};
+
 
 const customPhoneStyles = `
  .iti__selected-dial-code {
@@ -63,7 +58,7 @@ const LoginPage = () => {
       id: 2
     }
   ];
-  
+
   const [chatType, setChatType] = useState({
     chatType: "",
   });
@@ -79,8 +74,10 @@ const LoginPage = () => {
         separateDialCode: true,
         initialCountry: "co",
         preferredCountries: ["co"],
-        onlyCountries: ["co"], // Solo permitir Colombia
-        allowDropdown: false, // Deshabilitar el dropdown de países
+        onlyCountries: ["co"],
+        allowDropdown: false,
+        customContainer: "relative group w-full",
+        customPlaceholder: "Número de teléfono"
       });
     }
 
@@ -88,7 +85,6 @@ const LoginPage = () => {
       if (itiRef.current) {
         itiRef.current.destroy();
       }
-      // Limpiar los estilos al desmontar
       document.head.removeChild(styleSheet);
     };
   }, []);
@@ -180,7 +176,7 @@ const LoginPage = () => {
             })
             console.log("chat creado correctamente")
           } catch (error) {
-            console.error("Error creando el chat",error)
+            console.error("Error creando el chat", error)
           }
 
           loginStorage(formData.username, formData.city);
@@ -250,8 +246,9 @@ const LoginPage = () => {
                     name="phone"
                     ref={phoneInputRef}
                     required
-                    className={phoneInputStyles.input}
-                    placeholder="321 1234567"
+                    className="w-full min-w-[334px] h-10 px-3 py-2.5 rounded-lg bg-[#2A303C] text-white
+          border border-[#00D8D6] focus:ring-2 focus:ring-[#00D8D6] focus:ring-offset-0
+          transition-all duration-200 hover:bg-[#2A303C]/80"
                     onChange={handleInputChange}
                   />
                 </div>
