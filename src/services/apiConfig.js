@@ -1,8 +1,7 @@
-// const API_BASE_URL = "https://chatcampuslands.com:8443/iza--dev/";
-// const API_WEBSOCKET_URL = "wss://chatcampuslands.com:8443/iza--dev/chat";
-const API_BASE_URL = "http://localhost:8080/iza--test/";
-const API_WEBSOCKET_URL = "ws://localhost:8080/iza--test/chat";
-
+const API_BASE_URL = "https://chatcampuslands.com:8443/iza--dev/";
+const API_WEBSOCKET_URL = "wss://chatcampuslands.com:8443/iza--dev/chat";
+// const API_BASE_URL = "http://localhost:8080/iza--test/";
+// const API_WEBSOCKET_URL = "ws://localhost:8080/iza--test/chat";
 
 export const endpoints = {
   login: `${API_BASE_URL}auth/login`,
