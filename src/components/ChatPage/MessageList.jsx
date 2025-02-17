@@ -17,30 +17,33 @@ export const MessageList = ({ handleSendMessage }) => {
   const [autoScroll, setAutoScroll] = useState(true);
 
   useEffect(() => {
-    const fetchChatId = async () => {
-      try {
-        const response = await getChatId();
-        setChatId(response.data);
-      } catch (error) {
-        console.error("Error loading chat id:", error);
-      }
-    };
+    if (!chatId) {
+      const fetchChatId = async () => {
+        try {
+          const response = await getChatId();
+          setChatId(response.data);
+        } catch (error) {
+          console.error("Error loading chat id:", error);
+        }
+      };
+      fetchChatId();
+    }
+  }, [chatId]);
 
-    fetchChatId();
-  }, []);
   useEffect(() => {
+    if (!chatId || messagesPrev.length > 0) return; 
     const loadMessages = async () => {
-      if (!chatId) return;
       try {
-        const messages = await getMessagesByChatId(chatId);
-        setMessagesPrev(messages.data);
+        const response = await getMessagesByChatId(chatId);
+        setMessagesPrev(response.data);
       } catch (error) {
         console.error("Error loading messages:", error);
       }
     };
-
+  
     loadMessages();
-  }, [chatId]);
+  }, [chatId, messagesPrev.length]); 
+  
 
   const renderAvatar = (isAI) => {
     return isAI ? (
@@ -71,8 +74,10 @@ export const MessageList = ({ handleSendMessage }) => {
   };
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messagesPrev]);
+    if (autoScroll) {
+      scrollToBottom();
+    }
+  }, [messagesPrev.length]);    
 
   useEffect(() => {
     scrollToBottom();
@@ -95,7 +100,17 @@ export const MessageList = ({ handleSendMessage }) => {
                 : "bg-cyan-400/10 text-white"
             }`}
           >
-            <ReactMarkdown>{msg.content}</ReactMarkdown>
+            <ReactMarkdown
+              components={{
+                a: ({ node, ...props }) => (
+                  <a {...props} className="text-blue-400 underline" target="_blank" rel="noopener noreferrer">
+                    {props.children}
+                  </a>
+                ),
+              }}
+            >
+              {msg.content}
+            </ReactMarkdown>
           </div>
         );
     }
@@ -118,7 +133,17 @@ export const MessageList = ({ handleSendMessage }) => {
                 : "bg-cyan-400/10 text-white"
             }`}
           >
-            <ReactMarkdown>{msg.message}</ReactMarkdown>
+            <ReactMarkdown
+              components={{
+                a: ({ node, ...props }) => (
+                  <a {...props} className="text-blue-400 underline" target="_blank" rel="noopener noreferrer">
+                    {props.children}
+                  </a>
+                ),
+              }}
+            >
+              {msg.message}
+            </ReactMarkdown>
           </div>
         );
     }
@@ -132,38 +157,41 @@ export const MessageList = ({ handleSendMessage }) => {
     >
       <div className="absolute inset-0 py-6 px-4">
         <div className="max-w-[100%] mx-auto space-y-6">
-          {messagesPrev.map((msg, index) => (
-            <div
-              key={msg.id}
-              style={{ animationDelay: `${index * 0.1}s` }}
-              className={`w-full flex ${
-                msg.messageType === "IA" ? "justify-start" : "justify-end"
-              } 
-                animate-slide-in opacity-100`}
-            >
+          {messagesPrev
+            .slice()
+            .reverse()
+            .map((msg, index) => (
               <div
-                className={`flex items-start gap-3 ${
-                  msg.messageType === "IA"
-                    ? "flex-row max-w-[70%]"
-                    : "flex-row-reverse"
-                }`}
+                key={msg.id}
+                style={{ animationDelay: `${index * 0.1}s` }}
+                className={`w-full flex ${
+                  msg.messageType === "IA" ? "justify-start" : "justify-end"
+                } 
+                animate-slide-in opacity-100`}
               >
                 <div
-                  className={`h-8 w-8 ring-2 rounded-full flex items-center justify-center overflow-hidden shrink-0 
+                  className={`flex items-start gap-3 ${
+                    msg.messageType === "IA"
+                      ? "flex-row max-w-[70%]"
+                      : "flex-row-reverse"
+                  }`}
+                >
+                  <div
+                    className={`h-8 w-8 ring-2 rounded-full flex items-center justify-center overflow-hidden shrink-0 
                   ${
                     msg.messageType === "IA"
                       ? "ring-cyan-400/20 bg-slate-800"
                       : "ring-cyan-400/30 bg-slate-800/50"
                   }`}
-                >
-                  {renderAvatar(msg.messageType === "IA")}
-                </div>
-                <div className={`flex-1 ${msg.type ? "w-full" : ""}`}>
-                  {renderMessage(msg)}
+                  >
+                    {renderAvatar(msg.messageType === "IA")}
+                  </div>
+                  <div className={`flex-1 ${msg.type ? "w-full" : ""}`}>
+                    {renderMessage(msg)}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
 
           {messages.map((msg, index) => (
             <div
